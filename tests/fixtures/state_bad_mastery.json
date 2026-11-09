@@ -1,0 +1,61 @@
+{
+  "project_id": "PROJECT-001",
+  "status": "active",
+  "objective": "学会示例主题",
+  "classification": {
+    "primary": "technical_domain",
+    "secondary": [],
+    "intent": "use",
+    "confidence": "supported"
+  },
+  "current_stage": "TEACH",
+  "versions": {
+    "knowledge_map": 1,
+    "dependency_graph": 1,
+    "roadmap": 1,
+    "state": 1
+  },
+  "current_node": "NODE-001",
+  "next_task": "完成当前节点的验证任务",
+  "weak_nodes": [],
+  "progress": [
+    {
+      "project_id": "PROJECT-001",
+      "node_id": "NODE-001",
+      "mastery_level": 9,
+      "evidence": [
+        {
+          "node_id": "NODE-001",
+          "assessment_type": "application",
+          "result": "pass",
+          "reasoning_quality": "supported",
+          "error_type": null,
+          "date": "2026-11-09",
+          "mastery_decision": 3,
+          "confidence": "provisional"
+        }
+      ],
+      "confidence": "provisional",
+      "misconceptions": [],
+      "last_assessed": "2026-11-09",
+      "review_status": "scheduled",
+      "next_review": "2026-11-16",
+      "learning_history": []
+    }
+  ],
+  "events": [
+    {
+      "event": "project_created",
+      "date": "2026-11-09",
+      "detail": "创建项目"
+    },
+    {
+      "event": "assessment_completed",
+      "date": "2026-11-09",
+      "detail": "常规题通过"
+    }
+  ],
+  "history": [
+    "snapshot-001"
+  ]
+}
