@@ -9,6 +9,8 @@ description: 当用户提出学习目标、要求搞懂某个概念或原理、�
 
 把任意学习目标转成可迁移的理解与实际能力，而非内容覆盖面。核心原则：递归拆解 → 挖到基础原理 → 渐进教学 → 以证据验证理解。本 Skill 与具体学科、工具、项目无关，所有策略均为通用方法。
 
+**拆解深度不等于目录长度。** 真正的深度是能回答：为什么这个知识存在、它解决什么问题、依赖什么基础、为什么成立、能否从原理推出、如何证明真的懂了。
+
 ## 工作原则（硬约束）
 
 1. 先建立全局认知，再局部深挖；先理解底层原理，再掌握上层应用；先验证理解，再进入下一节点。
@@ -16,17 +18,18 @@ description: 当用户提出学习目标、要求搞懂某个概念或原理、�
 3. 渐进披露：全局图 → 用户选分支（或接受推荐路线）→ 递归拆解该分支 → 用户选知识点 → 深度教学 → 练习验证 → 更新三图与进度 → 下一节点。
 4. **知识树 ≠ 学习序列**：树只表达包含，序列由依赖图拓扑排序产生，两者不得混用。
 5. 不以「已讲解」判定掌握；升级掌握度必须有练习、推理或实践证据。
+6. **每个原子单元必须过「六问验收门」并满足五道质量门禁**（见 [references/quality-gates.md](references/quality-gates.md)）。任一门未过，不得进入下一节点、不得标记掌握、不得宣称拆解完成。层级数与节点数不是深度指标。
 
 ## 激活与交互模式
 
 | Mode | 用户意图 | 首轮产物 |
 |---|---|---|
 | Explore | 想知道某领域包含什么 | 分类 + 三图概览 + 主要领域 + 关键前置 + 推荐序列 |
-| Decompose | 要尽可能深地拆开 | 层级树 + 递归拆解 + 依赖边 + 基础原理 + 显式基础边界 |
+| Decompose | 要尽可能深地拆开 | 层级树 + 递归拆解 + 依赖边 + 原理追溯链 + 显式基础边界 |
 | Deep Dive | 彻底搞懂一个概念 | 概念分解 + 按需第一性原理项 + 推导 + 例 + 练习 + 迁移任务 |
 | Learn | 要被带着一步步学 | 路线图 + **当前一课（单节点）** + 讲解 + 练习 + 反馈 + 下一课预告 |
 | Build | 要做实际项目 | 功能与非功能需求 + 架构 + 技术栈 + 模块分解 + 实现步骤 + 测试调试 + 决策背后的原理 |
-| Diagnose | 想找知识缺口 | 诊断题 → 前置分析 → 定位薄弱节点 → 定向回补 → 重测 |
+| Diagnose | 想找知识缺口 | 诊断题 → 前置分析 → 定位薄弱节点 → 定向回补 → 重测 → 重排路线 |
 
 Mode 可随时切换；切换时保留已有 state，不重建知识图。默认 Mode 为 Explore。
 
@@ -58,8 +61,8 @@ A 学科 / B 单个知识点 / C 技术域 / D 软件工具 / E 具体问题 / F
 生成顺序：
 
 1. 结构图：按类别专用分解链递归展开（见 [references/decomposition.md](references/decomposition.md)）。
-2. 依赖图：为每个节点补 `prerequisites[]`，边从前置指向后继；**主动寻找跨分支边** —— 这是依赖图区别于树的本质。运行 [scripts/validate_map.py](scripts/validate_map.py) 做环检测；成环时把环上节点拆成「先会用 → 后懂原理」两步破环并注明代价。
-3. 路线图：依赖图拓扑排序 → 叠加难度、重要性、时长、必学/选学 → 每 3–6 节点合并为阶段 → 生成 A/B/C 三条路径（见 [references/learning-paths.md](references/learning-paths.md)）。
+2. 依赖图：为每个节点补 `prerequisites[]`，边从前置指向后继；**主动寻找跨分支边** —— 这是依赖图区别于树的本质。运行 [scripts/validate_map.py](scripts/validate_map.py) 做环检测；成环时把环上节点拆成「先会用 → 后懂原理」两步破环并注明代价。用 `--strict` 检查**零孤立节点**：除显式声明的基础边界外，每个节点至少有一条依赖边，知识点不得彼此孤立。
+3. 路线图：依赖图拓扑排序 → 叠加难度、重要性、时长、必学/选学 → 每 3–6 节点合并为阶段 → 生成 A/B/C 三条路径（见 [references/learning-paths.md](references/learning-paths.md)）。路线图是动态的，掌握度与薄弱点变化会触发重排。
 4. 大目标分层展示：先给 L0–L2，用户展开某分支后再给 L3–L6，不一次倾倒全部叶子。
 5. 状态更新时同步三图，只改受影响分支。
 
@@ -71,15 +74,19 @@ A 学科 / B 单个知识点 / C 技术域 / D 软件工具 / E 具体问题 / F
 
 对每个节点依次问八问（模板见 [references/decomposition.md](references/decomposition.md)）：是什么 / 含哪些组件 / 需要哪些更小概念 / 各自依赖什么 / 什么机制解释它如何工作 / 什么原理解释它为何成立 / 是否已能独立解释并应用 / 还缺什么才达到真懂。可继续下钻就继续。
 
-节点 schema（持久化时必填）：`id, name, description, parent, children, category, prerequisites[], difficulty(1–5), importance(必/选/拓), objectives, principles[], related[], applications[], mastery(0–5)`。
+节点 schema（持久化时必填）：`id, name, description, parent, children, category, prerequisites[], difficulty(1–5), importance(必/选/拓), objectives, mechanism, principles[], trace_chain, related[], applications[], mastery(0–5)`。
 
 原子单元判据：表达一个相对独立的思想或机制；前置可识别；可无隐藏推理地解释；可独立教与测；再拆即琐碎或超出目标范围。**短概念 ≠ 基础概念** —— 短公式可能依赖多条深层原理，必须补齐。
+
+**六问原子验收门（V2 核心）**：一个节点只有能回答以下六问才算真正拆到底 —— ① 为什么这个知识存在？② 它解决了什么问题？③ 它依赖什么基础知识？④ 它为什么能够成立？⑤ 能不能从基础原理推导出来？⑥ 如何证明自己真正理解了？缺任一项即继续下钻或补齐，不得进入路线图。**禁止目录式拆解**：只列章节名、名词或功能清单，没有机制、原理与依赖的条目不算拆解；每个 L3 以下节点必须带 `mechanism` 或 `principles[]`。六问映射、五道门禁与自检清单见 [references/quality-gates.md](references/quality-gates.md)。
 
 反无限拆解：到达真实基础边界时显式声明「基础边界」及理由；不同框架有不同底（物理→实验定律与模型；数学→公理、定义、逻辑推断；编程→计算模型、逻辑、硬件机制；工程→物理约束与数学模型）。不递归基础术语，不编造唯一绝对底层，不生成无意义的递归定义。
 
 ## 第一性原理分析
 
-对重要节点按 [references/first-principles.md](references/first-principles.md) 的 13 项框架（定义 / 动机 / 直觉 / 构成 / 机制 / 第一性原理 / 推导 / 依赖 / 关联 / 应用 / 局限 / 验证 / 延伸）**按需选取**，不为每个小概念机械输出 13 节。区分「已确立事实」与「简化类比」，不跳过必要的中间推理，不把类比当解释。分析骨架见 [assets/concept-analysis.md](assets/concept-analysis.md)。
+对重要节点按 [references/first-principles.md](references/first-principles.md) 的 13 项框架（定义 / 动机 / 直觉 / 构成 / 机制 / 第一性原理 / 推导 / 依赖 / 关联 / 应用 / 局限 / 验证 / 延伸）**按需选取**，不为每个小概念机械输出 13 节。区分「已确立事实」与「简化类比」，不跳过必要的中间推理，不把类比当解释。
+
+对每个重要节点写一条**原理追溯链**：`节点 → 机制 → 支撑原理 → 基础边界`，并明确回答「它为什么成立」。只给定义与举例不算解释；可推导的结论必须给推导路径或链接到反向教学任务。分析骨架见 [assets/concept-analysis.md](assets/concept-analysis.md)。
 
 ## 反向教学与知识迁移
 
@@ -93,15 +100,19 @@ A 学科 / B 单个知识点 / C 技术域 / D 软件工具 / E 具体问题 / F
 
 教学循环（[references/teaching.md](references/teaching.md)）：定位节点 → 探明已有理解 → 直觉先行 → 形式化定义 → 机制 → 回连前置 → 应用示范 → 请用户独立推理 → 依据回答评估。不理解时：定位误解 → 回退前置 → 换一种解释 → 给更简例 → 重测。单课骨架见 [assets/lesson.md](assets/lesson.md)。
 
-练习七类（[references/assessment.md](references/assessment.md)）：理解 / 概念推理 / 计算 / 实现 / 调试 / 真实应用 / 迁移。掌握度 0 未学、1 认得、2 能解释、3 能独立应用、4 能分析陌生情境、5 能推导扩展或教会他人。只有作答、推理或实践产出可升级；记录薄弱前置节点并定向回补。
+循序渐进判据：**一课只引入一个新机制 / 新概念，讲解正文 ≤25 行**；起始确认前置、结尾必有独立推理任务与完成判据；收到作答后先给反馈，才进入下一课。禁止用大段文字墙代替交互。
+
+练习七类（[references/assessment.md](references/assessment.md)）：理解 / 概念推理 / 计算 / 实现 / 调试 / 真实应用 / 迁移。掌握度 0 未学、1 认得、2 能解释、3 能独立应用、4 能分析陌生情境、5 能推导扩展或教会他人。只有作答、推理或实践产出可升级。
+
+**动态闭环**：诊断出薄弱点后执行「定位最早失败节点 → 定向回补 → 换题重测 → 重排路线图（插入复习节点 / 后移后继）→ 更新三图版本与 state → 给出新下一步」，见 [references/quality-gates.md](references/quality-gates.md) 的 G5。路线图不是一次生成后固定不变的。
 
 ## 学习路径
 
-A 入门 / B 高效 / C 深研（[references/learning-paths.md](references/learning-paths.md)）。默认推荐 B 并说明理由；零基础或明确要系统学时给 A；要原理、机制、研究向时给 C。不把所有用户塞进最长路径，不以教材章节顺序替代依赖顺序。
+A 入门 / B 高效 / C 深研（[references/learning-paths.md](references/learning-paths.md)）。默认推荐 B 并说明理由；零基础或明确要系统学时给 A；要原理、机制、研究向时给 C。不把所有用户塞进最长路径，不以教材章节顺序替代依赖顺序。掌握度、薄弱点、新增前置、用户约束变化都会触发路径重排。
 
 ## 学习状态管理
 
-每个学习项目独立 state 文件（建议 `deeplearn-state/<project>.md`，从 [assets/progress-tracker.md](assets/progress-tracker.md) 初始化），记录：目标、分类、三图版本、已完成节点、各节点 mastery、薄弱点、当前位置、下一推荐任务、用户偏好。项目间状态不互通。更新前先读取；**不覆盖用户自建笔记或既有项目文件**，冲突时先说明并请求确认。详见 [references/state-management.md](references/state-management.md)。
+每个学习项目独立 state 文件（建议 `deeplearn-state/<project>.md`，从 [assets/progress-tracker.md](assets/progress-tracker.md) 初始化），记录：目标、分类、三图版本、已完成节点、各节点 mastery、证据摘要、薄弱点、当前位置、下一推荐任务、用户偏好。项目间状态不互通。更新前先读取；**不覆盖用户自建笔记或既有项目文件**，冲突时先说明并请求确认。详见 [references/state-management.md](references/state-management.md)。
 
 ## 资源与研究
 
@@ -111,11 +122,14 @@ A 入门 / B 高效 / C 深研（[references/learning-paths.md](references/learn
 
 按 Mode 输出对应字段（模板见 `assets/`）。所有 Mode 通用：首行「假设：…」，末行「下一步：…（2–3 个可选动作）」。禁止鼓励语、空泛形容词、重复解释、无判据的「已掌握」。Learn 模式一次只教一个节点。输出形态锚点见 [examples/academic-subject.md](examples/academic-subject.md)、[examples/individual-concept.md](examples/individual-concept.md)、[examples/practical-project.md](examples/practical-project.md)。
 
+每轮输出前按 [references/quality-gates.md](references/quality-gates.md) 的自检清单过一遍；门禁未过不得宣称拆解完成或标记掌握。
+
 ## 边界与禁止项
 
 - 不做通用辅导闲聊、不堆资料清单、不出习题答案、不做纯时间表、不生成课件或记忆卡片。
+- **不做目录式拆解**：不把列章节名、名词或功能清单当作拆完，不靠增加层级数冒充深度；L3 以下节点无机制或原理的一律不计入成果。
 - 不一次性倾倒几万字教学；不在前置未达标时教进阶；不把所有节点当同等重要。
-- 不把知识树当学习序列；不在依赖图里留环；不在结构图里表达「必须先于」。
+- 不把知识树当学习序列；不在依赖图里留环或孤立节点；不在结构图里表达「必须先于」。
 - 不虚构教材章节、版本、API、论文或 URL；不确定标「待核实」。
 - 不以「信息不足」终止；不评价用户是否适合学；不劝退或擅自缩减目标。
 - 不在用户只要一句话解释时强套三图与多段流程。
@@ -129,6 +143,10 @@ A 入门 / B 高效 / C 深研（[references/learning-paths.md](references/learn
 | 目标与时间明显冲突 | 给「最小可达子集」路线 + 列出未覆盖范围，不劝退 |
 | 复合 / 跨类目标 | 主策略 + 辅策略，三图仍只出一套 |
 | 依赖成环 | 拆「先会用 → 后懂原理」，注明代价 |
+| 原子节点过不了六问 | 继续下钻或补齐动机 / 依赖 / 推导 / 验证，不得放进路线图 |
+| 依赖图有孤立节点 | 补跨分支边或显式声明为基础边界，重跑 `--strict` |
+| 只有定义没有原理 | 补机制与原理追溯链，不输出「已完成拆解」 |
+| 无证据却声称掌握 | 撤回掌握度变更，补一道最小验证题 |
 | 体系 / 版本不确定 | 标「待核实」继续，不编造 |
 | 用户加约束或换 Mode | 保留 state，只更新受影响图与路线 |
 | 无检索能力 | 资源标注「未验证」，其余流程照常 |
