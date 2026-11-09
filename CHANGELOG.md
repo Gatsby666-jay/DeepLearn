@@ -1,0 +1,73 @@
+# Changelog
+
+## v2.0 — 完整闭环架构升级（2026-11-09）
+
+### 架构审计发现（修改前）
+
+审计对象：V1 全部 23 个文件（SKILL.md、README.md、references/ 11、assets/ 6、scripts/ 1、examples/ 3），逐个核对职责、被引用关系与实际使用情况。基线 `quick_validate.py` 通过，无断链。
+
+| 类别 | 发现 |
+|---|---|
+| 缺失文件 | Orchestrator、统一数据 schema、误解诊断、间隔复习、版本管理、结构化 JSON 模板、测试套件、CHANGELOG |
+| 缺失 schema | KnowledgeNode / LearnerProgress / DependencyEdge 只在散文中描述，字段命名不统一（`mastery` vs `mastery_level`），无机器可读定义 |
+| 重复规则 | 六问验收与门禁细则同时写在 SKILL.md、quality-gates.md、decomposition.md；三图与严格模式说明在两处重复 |
+| 冲突规则 | 「讲解 ≤25 行」被写成硬上限，与「不得牺牲概念完整性」冲突；`--strict` 的「零孤立节点」与「根节点合法」冲突 |
+| 不完整工作流 | 阶段按 Mode 描述，但无统一生命周期、无状态转换表、无失败阻塞与中断恢复；诊断后没有强制回流到路线重排 |
+| 未实现功能 | 学习意图层、类别感知六问、分解质量分、节点去重、目标相对基础、Integration Lesson、动态关键路径、事件驱动持久化、间隔复习 |
+| 无效假设 | 假设所有节点都应有一条入边；V2 明确 root / terminal / 声明用途的独立可选概念合法 |
+| 缺失测试 | 只有人工 dry-run 记录，没有可执行用例与确定性断言 |
+
+### 关键设计决策
+
+1. **不移动任何 V1 文件**。`references/`、`assets/`、`scripts/`、`examples/` 路径与内部链接全部保留；新增内容放进 `core/`、`learning/`、`memory/`、`templates/`、`tests/`。`core/orchestrator.md` 的模块路由表是职责归属的单一事实来源，规则只在权威文件定义一次。
+2. **确定性验证交给 Python**。新增 `scripts/deeplearn_rules.py` 作为枚举与必填字段的可执行单一事实来源；6 个校验脚本 + 1 个测试入口。**未单独创建 `validate_dependencies.py`**：依赖边校验已由增强后的 `validate_map.py` 完整覆盖，拆成两个脚本只会重复规则。
+3. **闭环优先于功能数量**。实现 12 阶段生命周期、5 种工作流、状态转换表；硬性规定 `VALIDATE` 失败阻塞、无证据不得前进、`REMEDIATE → REPLAN → PERSIST → CONTINUE` 必须回流、中断按 `current_stage` 恢复。
+4. **V1 兼容修正**：`≤25 行` 从硬上限改为可读性指导；`--strict` 不再拒绝所有无入边节点，孤立项与断连组件作为警告，仅 strict 下阻断。Mermaid 与 V1 简单 JSON 输入格式保持可用（S13/S14 回归通过）。
+5. **版本线厘清**：上一轮「六问验收 + 五道门禁」原在 README 中标为 V2，本次更正为 **v1.1**；本次完整架构升级为 **v2.0**。
+
+### 新增文件
+
+`core/orchestrator.md`、`core/data-schema.md`、`learning/misconception.md`、`learning/spaced-review.md`、`memory/version-control.md`、`templates/knowledge-node.json`、`templates/learner-progress.json`、`scripts/deeplearn_rules.py`、`scripts/validate_schema.py`、`scripts/validate_references.py`、`scripts/validate_state.py`、`scripts/check_consistency.py`、`scripts/run_tests.py`、`tests/cases.json`、`tests/fixtures/`（14 个 JSON 样本）、`examples/technical-domain.md`、`CHANGELOG.md`。
+
+### 修改文件
+
+`SKILL.md`（重写为 V2 入口）、`README.md`、`scripts/validate_map.py`（重写增强，保持 V1 输入兼容）、11 份 `references/`、2 个 `assets/` 模板（均以追加 V2 增补章节方式修改，未删 V1 内容）。
+
+### 移除 / 替换文件
+
+无文件被移除。`validate_map.py` 被重写但保留全部 V1 命令行行为（`-`、`--json`、`--strict`、退出码语义）。
+
+### 实现状态分级
+
+| 能力 | 状态 |
+|---|---|
+| 统一 schema、枚举、ID 规则 | 已实现并测试（S1–S3、S8–S12） |
+| 图校验（环/自环/重复 ID/缺失引用/枚举/重复边/断连/门禁） | 已实现并测试（S4–S14） |
+| 状态与证据校验（含冲突证据） | 已实现并测试（S15–S17） |
+| 内部引用与跨模块一致性 | 已实现并测试（S18–S19） |
+| 12 阶段生命周期、5 工作流、闭环与中断恢复 | 已实现；契约级测试（T1–T12），未在真实 Agent 会话中端到端执行 |
+| 统一 schema 在真实运行时被 Agent 完整遵守 | 已实现但**未充分测试**：脚本能校验提交给它的数据，不能保证 Agent 每次都生成合规 JSON |
+| Atomic / Integration Lesson、误解诊断、间隔复习、版本快照 | 已实现为可执行规则文档；契约级测试通过，教学质量未自动化验证 |
+| 自适应教学质量、误解根因准确度、真迁移判定 | **未自动化**（N1–N3），依赖执行 Agent 判断与质量门禁自检 |
+| 资源引擎联网验证 | 仅文档实现；不编造 URL，未验证即标注 |
+
+### 测试结果
+
+`python scripts/run_tests.py` → 合计 34：通过 31、失败 0、未自动化 3。
+`quick_validate.py` 通过；`validate_references.py` 检查 92 处引用全部有效；`check_consistency.py` 通过（1 条警告：`使用说明` 标题在 3 个 assets 模板中重复，属模板通用标题，非重复规则）。
+
+### 已知限制
+
+- 门禁是规则级检查，依赖执行 Agent 运行自检清单；宿主层不强制拦截。
+- 脚本只做结构化确定性验证，不判定解释正确性、类比恰当性或迁移题质量。
+- 12 个生命周期用例是文档契约检查 + 确定性脚本断言，不是真实 Agent 端到端回归。
+- state 需要可写 workspace；不可写时声明「仅会话内生效」。
+- Mermaid 渲染取决于宿主客户端。
+
+## v1.1 — 质量门禁与六问原子验收（2026-11-09）
+
+依据外部评审的五个问题（只生成目录、知识点孤立、解释停在概念层、文字墙教学、无法判断掌握），新增 `references/quality-gates.md`，把「拆解深度 ≠ 目录长度」固化为六问验收门与 G1–G5 五道门禁；`scripts/validate_map.py` 增加 `--strict`；同步修正 SKILL.md、7 份 references、模板与示例。文件数 22 → 23。
+
+## v1.0 — 通用学习拆解引擎（2026-11-09）
+
+初始版本：七类分类、L0–L6 递归拆解、三图引擎、13 项第一性原理、0–5 掌握度、反向教学与四类迁移、A/B/C 路径、六种 Mode、状态管理、资源引擎、`validate_map.py`。发布至 GitHub 并安装到 WorkBuddy 用户级 skills 目录。
