@@ -1,0 +1,23 @@
+{
+  "project_id": "PROJECT-001",
+  "node_id": "NODE-001",
+  "mastery_level": 3,
+  "evidence": [
+    {
+      "node_id": "NODE-001",
+      "assessment_type": "application",
+      "result": "pass",
+      "reasoning_quality": "supported",
+      "error_type": null,
+      "date": "2026-11-09",
+      "mastery_decision": 3,
+      "confidence": "provisional"
+    }
+  ],
+  "confidence": "provisional",
+  "misconceptions": [],
+  "last_assessed": "2026-11-09",
+  "review_status": "scheduled",
+  "next_review": "2026-11-16",
+  "learning_history": []
+}
