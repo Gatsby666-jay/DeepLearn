@@ -100,3 +100,15 @@ flowchart LR
 - 把「推荐先读第 3 章」这类教材顺序当作依赖依据。
 - 结构图里画 `必须先于` 的边，导致节点出现多个父节点。
 - 三张图使用不一致的节点名称或 ID。
+
+
+## V2 增补：边类型与图校验契约
+
+依赖边字段见 `core/data-schema.md` §4：`source_node_id`, `target_node_id`, `dependency_type`, `necessity`, `explanation`；方向恒为 **prerequisite → dependent**。
+`dependency_type`：conceptual_dependency / mathematical_dependency / physical_dependency / operational_dependency / implementation_dependency；`necessity`：required / recommended（仅 required 进入 `prerequisites`）。Mermaid 可写 `A -->|conceptual_dependency| B`。
+
+三图共用稳定节点 ID：结构图不表达「必须先于」，依赖图不表达父子包含，路线图由依赖图 + 学习者状态 + 目标生成。
+
+交给 `scripts/validate_map.py` 的确定性检查：重复 ID、缺失引用、非法方向、自环、依赖环、重复边、非法依赖类型与枚举、缺失必填字段、父子引用互逆、无效掌握度引用、断连组件、`prerequisites` 与 required 边一致性、六问门禁与质量分。
+
+**root 节点、terminal 节点、声明了范围与用途的独立可选概念都合法**，不得因「没有入边」一律拒绝；孤立项与多连通分量只在 `--strict` 下阻断。环必须阻断路线图生成，失败时停在 `VALIDATE`，输出具体节点 ID 与修复动作。
