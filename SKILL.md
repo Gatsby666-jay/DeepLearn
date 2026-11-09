@@ -1,156 +1,173 @@
 ---
 name: deeplearn
-description: 当用户提出学习目标、要求搞懂某个概念或原理、拆解一门学科或技术、上手某个工具、追问「为什么／怎么工作」、做一个项目或练成一项能力时触发；先分类并生成知识结构图、知识依赖图、学习路线图，再按用户选择的分支递归拆解到底层原理，通过渐进教学、练习与迁移任务验证真实理解。不适用于只要一句话解释、索要习题答案、生成课件或资料清单、制定纯时间表。
+description: 当用户提出学习目标、要求搞懂某个概念或原理、拆解一门学科或技术、上手某个工具、追问「为什么／怎么工作」、做一个项目或练成一项能力时触发；由 Orchestrator 驱动完整学习闭环，先分类并生成知识结构图、知识依赖图、学习路线图，按统一 schema 递归拆解到知识原子，通过自适应教学、误解诊断、证据化评估与动态重排验证真实理解。不适用于只要一句话解释、索要习题答案、生成课件或资料清单、制定纯时间表。
 ---
 
-# DeepLearn
+# DeepLearn V2
 
 ## 核心目标
 
-把任意学习目标转成可迁移的理解与实际能力，而非内容覆盖面。核心原则：递归拆解 → 挖到基础原理 → 渐进教学 → 以证据验证理解。本 Skill 与具体学科、工具、项目无关，所有策略均为通用方法。
+把任意学习目标转成可迁移的理解与实际能力。核心原则：**递归拆解 → 统一数据 → 三图校验 → 闭环教学 → 证据验证 → 动态重排**。本 Skill 与具体学科、工具、项目无关，所有策略均为通用方法。
 
-**拆解深度不等于目录长度。** 真正的深度是能回答：为什么这个知识存在、它解决什么问题、依赖什么基础、为什么成立、能否从原理推出、如何证明真的懂了。
+**拆解深度不等于目录长度。** 真正的深度是能回答：为什么这个知识存在、解决什么问题、依赖什么基础、为何成立、能否从原理推出、如何证明真的懂了。
+
+V2 最重要的不是功能数量，而是**完整闭环**：理解目标 → 构建知识网络 → 规划路线 → 自适应教学 → 检测掌握 → 纠错 / 调整路线 / 保存进度 → 继续学习（循环）。
 
 ## 工作原则（硬约束）
 
 1. 先建立全局认知，再局部深挖；先理解底层原理，再掌握上层应用；先验证理解，再进入下一节点。
-2. 首次响应只给：分类 + 三图全局概览 + 下一步选择。**禁止一次性输出长篇教学、全部叶子节点或完整讲义**（首轮 ≤40 行 / ≤800 字）。
-3. 渐进披露：全局图 → 用户选分支（或接受推荐路线）→ 递归拆解该分支 → 用户选知识点 → 深度教学 → 练习验证 → 更新三图与进度 → 下一节点。
-4. **知识树 ≠ 学习序列**：树只表达包含，序列由依赖图拓扑排序产生，两者不得混用。
-5. 不以「已讲解」判定掌握；升级掌握度必须有练习、推理或实践证据。
-6. **每个原子单元必须过「六问验收门」并满足五道质量门禁**（见 [references/quality-gates.md](references/quality-gates.md)）。任一门未过，不得进入下一节点、不得标记掌握、不得宣称拆解完成。层级数与节点数不是深度指标。
+2. 首次响应只给：分类 + 三图全局概览 + 下一步选择。禁止一次性长篇教学（首轮 ≤40 行 / ≤800 字）。
+3. 渐进披露：全局图 → 选分支 → 递归拆解 → 选知识点 → 单节点教学 → 练习验证 → 更新状态 → 下一节点。
+4. **知识树 ≠ 学习序列**；**知识深度 ≠ 掌握度**；**父子关系 ≠ 前置关系**。
+5. 不以「已讲解」判定掌握；升级必须有练习、推理或实践证据。
+6. 每个原子单元过「六问验收门」并满足五道质量门禁（[references/quality-gates.md](references/quality-gates.md)）；任一门未过不得推进。
+7. 闭环不得线性结束：`REMEDIATE → REPLAN → PERSIST → CONTINUE` 必须回流到 `TEACH` / `MAP` / `PLAN`；`VALIDATE` 失败停在 `VALIDATE`。
+
+## V2 架构与入口（单一事实来源）
+
+| 职责 | 权威文件 |
+|---|---|
+| 生命周期、5 工作流、闭环、状态转换 | [core/orchestrator.md](core/orchestrator.md) |
+| KnowledgeNode / LearnerProgress / 边 / 枚举 | [core/data-schema.md](core/data-schema.md) |
+| 分类 + 学习意图 + 置信度 | [references/classification.md](references/classification.md) |
+| 递归拆解（自适应深度、去重、质量分） | [references/decomposition.md](references/decomposition.md) |
+| 三图与边类型 | [references/three-graphs.md](references/three-graphs.md) |
+| 质量门禁与六问验收 | [references/quality-gates.md](references/quality-gates.md) |
+| 第一性原理与正确性检查 | [references/first-principles.md](references/first-principles.md) |
+| Atomic / Integration Lesson | [references/teaching.md](references/teaching.md) |
+| 评估、证据、冲突证据 | [references/assessment.md](references/assessment.md) |
+| 误解诊断 | [learning/misconception.md](learning/misconception.md) |
+| 间隔复习 | [learning/spaced-review.md](learning/spaced-review.md) |
+| 反向教学与迁移 | [references/transfer-reverse.md](references/transfer-reverse.md) |
+| A/B/C + 目标导向路径 | [references/learning-paths.md](references/learning-paths.md) |
+| 事件驱动状态 | [references/state-management.md](references/state-management.md) |
+| 版本与快照 | [memory/version-control.md](memory/version-control.md) |
+| 资源发现 | [references/resources.md](references/resources.md) |
+| 结构化模板 | `templates/`（JSON）、`assets/`（Markdown） |
+| 确定性校验 | `scripts/`（`scripts/run_tests.py` 为测试入口） |
+| 测试样本与用例 | `tests/` |
+
+规则只在权威文件里定义一次；V1 路径全部保留，未移动任何既有文件。
 
 ## 激活与交互模式
 
 | Mode | 用户意图 | 首轮产物 |
 |---|---|---|
-| Explore | 想知道某领域包含什么 | 分类 + 三图概览 + 主要领域 + 关键前置 + 推荐序列 |
-| Decompose | 要尽可能深地拆开 | 层级树 + 递归拆解 + 依赖边 + 原理追溯链 + 显式基础边界 |
-| Deep Dive | 彻底搞懂一个概念 | 概念分解 + 按需第一性原理项 + 推导 + 例 + 练习 + 迁移任务 |
-| Learn | 要被带着一步步学 | 路线图 + **当前一课（单节点）** + 讲解 + 练习 + 反馈 + 下一课预告 |
-| Build | 要做实际项目 | 功能与非功能需求 + 架构 + 技术栈 + 模块分解 + 实现步骤 + 测试调试 + 决策背后的原理 |
-| Diagnose | 想找知识缺口 | 诊断题 → 前置分析 → 定位薄弱节点 → 定向回补 → 重测 → 重排路线 |
+| Explore | 想知道某领域包含什么 | 分类 + 意图 + 三图概览 + 推荐序列 |
+| Decompose | 要尽可能深地拆开 | 层级树 + 六问验收 + 依赖边 + 原理追溯链 + 基础边界 |
+| Deep Dive | 彻底搞懂一个概念 | 概念分解 + 按需第一性原理项 + 推导 + 一节聚焦课 + 验证与迁移 |
+| Learn | 要被带着一步步学 | 路线图 + 当前一课（单节点）+ 讲解 + 练习 + 反馈 |
+| Build | 要做实际项目 | 交付物 + 子系统 + 技术依赖 + 目标导向路线 + 测试 |
+| Diagnose | 想找知识缺口 | 诊断题 → 误解定位 → 定向补救 → 重测 → 重排路线 |
 
-Mode 可随时切换；切换时保留已有 state，不重建知识图。默认 Mode 为 Explore。
+Mode 随时可切换；切换保留 state，不重建图。默认 Explore。由 Orchestrator 选择工作流 A–E，不把宽泛学科流程强加给简单问题。
 
 ## 输入规范
 
 - 必需：目标文本。可选：起点、可用时间、用途、约束、偏好深度。
-- 缺失即采用默认（零基础 / 每周 3–5h / 目标是能应用并讲清 / 中文资料），在输出首行标「假设：…」后继续。
-- 仅当目标指向完全不明且无法合理假设时提 **1 个**澄清问题；提问同时给出基于假设的降级产物。目标已清楚时不追问。
+- 缺失采用默认（零基础 / 每周 3–5h / 能应用并讲清 / 中文资料），首行标「假设：…」后继续。
+- 仅目标完全不明且无法合理假设时提 **1 个**澄清问题，同时给出降级产物。
 
 ## 分类引擎
 
-七类 A–G（判定话术与边界样例见 [references/classification.md](references/classification.md)，分类置信度低或复合目标时载入）：
-A 学科 / B 单个知识点 / C 技术域 / D 软件工具 / E 具体问题 / F 项目目标 / G 能力素养。
+保留七类 A–G（academic_subject / individual_concept / technical_domain / software_tool / specific_problem / practical_project / competency）。新增**独立的学习意图层**：understand / use / research / build / solve / master / exam。分类与意图互不替代；输出主类、辅类、意图、置信度与依据。详见 [references/classification.md](references/classification.md)。
 
-判定顺序：有交付物或场景 → F；「为什么／如何工作」问句 → E；名词是具体工具 → D；名词是工具集合或工程领域 → C；名词是单一概念或机制 → B；宽泛体系 → A；目标是「变得擅长某种活动」→ G。
+## 三图引擎
 
-复合目标选 1 个主策略 + 最多 2 个辅策略（如「嵌入式系统」= C 主 + A/F 辅），三图仍只出一套。输出分类时给：主类、辅类、判定依据（用户原话关键词）、置信度。
-
-## 三图引擎（核心）
-
-对同一批节点必须区分三种关系，分别产出三张图，不得合并。规范与 Mermaid 模板见 [references/three-graphs.md](references/three-graphs.md)。
-
-| 图 | 关系语义 | 回答的问题 | 结构 |
+| 图 | 边语义 | 回答 | 结构 |
 |---|---|---|---|
-| 知识结构图 Knowledge Map | A **包含** B | 这个知识有哪些部分 | 树，L0–L6 |
-| 知识依赖图 Prerequisite Graph | B **必须先于** A | 学会它之前要掌握什么 | 有向图，**允许跨分支连边**，必须无环 |
-| 学习路线图 Learning Roadmap | 阶段 N 先于阶段 N+1 | 按什么顺序学 | 阶段序列，带难度/重要性/时长 |
+| 知识结构图 | A **包含** B | 有哪些部分 | 树，父唯一 |
+| 知识依赖图 | B **必须先于** A | 学会前要会什么 | DAG，跨分支、带边类型 |
+| 学习路线图 | 阶段 N 先于 N+1 | 按什么顺序学 | 阶段序列 + 属性 |
 
-生成顺序：
+依赖边字段：`source_node_id → target_node_id`（方向恒定）、`dependency_type`（conceptual / mathematical / physical / operational / implementation）、`necessity`（required / recommended）、`explanation`。仅 required 边进入 `prerequisites`。
 
-1. 结构图：按类别专用分解链递归展开（见 [references/decomposition.md](references/decomposition.md)）。
-2. 依赖图：为每个节点补 `prerequisites[]`，边从前置指向后继；**主动寻找跨分支边** —— 这是依赖图区别于树的本质。运行 [scripts/validate_map.py](scripts/validate_map.py) 做环检测；成环时把环上节点拆成「先会用 → 后懂原理」两步破环并注明代价。用 `--strict` 检查**零孤立节点**：除显式声明的基础边界外，每个节点至少有一条依赖边，知识点不得彼此孤立。
-3. 路线图：依赖图拓扑排序 → 叠加难度、重要性、时长、必学/选学 → 每 3–6 节点合并为阶段 → 生成 A/B/C 三条路径（见 [references/learning-paths.md](references/learning-paths.md)）。路线图是动态的，掌握度与薄弱点变化会触发重排。
-4. 大目标分层展示：先给 L0–L2，用户展开某分支后再给 L3–L6，不一次倾倒全部叶子。
-5. 状态更新时同步三图，只改受影响分支。
+生成顺序：结构图 → 补依赖边（主动找跨分支边）→ 运行 `scripts/validate_map.py --strict` → 拓扑排序 → 叠加目标/状态生成 A/B/C 或目标导向路线 → 状态变化时动态重排。**root、terminal、声明用途的独立可选节点合法**；环必须阻断路线图。详见 [references/three-graphs.md](references/three-graphs.md)。
 
-三图骨架从 [assets/knowledge-map.md](assets/knowledge-map.md)、[assets/prerequisite-graph.md](assets/prerequisite-graph.md)、[assets/learning-roadmap.md](assets/learning-roadmap.md) 初始化。
+三图骨架：[assets/knowledge-map.md](assets/knowledge-map.md)、[assets/prerequisite-graph.md](assets/prerequisite-graph.md)、[assets/learning-roadmap.md](assets/learning-roadmap.md)。
 
 ## 递归拆解引擎
 
-层级为概念性、非固定深度：L0 目标 → L1 领域/组件 → L2 模块/分支 → L3 概念/技术 → L4 子概念与机制 → L5 基础知识单元 → L6 原理、定律、公理、元机制。
+层级 L0–L6 为概念性刻度，按类别选分解链与深度，不对所有知识用同一套。对每个节点问八问（是什么 / 解决什么 / 含哪些组件 / 依赖什么 / 如何工作 / 为何成立 / 能否独立解释应用 / 还缺什么）。
 
-对每个节点依次问八问（模板见 [references/decomposition.md](references/decomposition.md)）：是什么 / 含哪些组件 / 需要哪些更小概念 / 各自依赖什么 / 什么机制解释它如何工作 / 什么原理解释它为何成立 / 是否已能独立解释并应用 / 还缺什么才达到真懂。可继续下钻就继续。
+六问原子验收改为**类别感知**：每问 `passed` / `failed` / `not_applicable`，不适用给理由；缺适用项即继续下钻。分解质量分六维各 0–2（总 12），`dependency_correctness` / `explanatory_depth` / `verifiability` 任一低于 2 即门禁失败。
 
-节点 schema（持久化时必填）：`id, name, description, parent, children, category, prerequisites[], difficulty(1–5), importance(必/选/拓), objectives, mechanism, principles[], trace_chain, related[], applications[], mastery(0–5)`。
-
-原子单元判据：表达一个相对独立的思想或机制；前置可识别；可无隐藏推理地解释；可独立教与测；再拆即琐碎或超出目标范围。**短概念 ≠ 基础概念** —— 短公式可能依赖多条深层原理，必须补齐。
-
-**六问原子验收门（V2 核心）**：一个节点只有能回答以下六问才算真正拆到底 —— ① 为什么这个知识存在？② 它解决了什么问题？③ 它依赖什么基础知识？④ 它为什么能够成立？⑤ 能不能从基础原理推导出来？⑥ 如何证明自己真正理解了？缺任一项即继续下钻或补齐，不得进入路线图。**禁止目录式拆解**：只列章节名、名词或功能清单，没有机制、原理与依赖的条目不算拆解；每个 L3 以下节点必须带 `mechanism` 或 `principles[]`。六问映射、五道门禁与自检清单见 [references/quality-gates.md](references/quality-gates.md)。
-
-反无限拆解：到达真实基础边界时显式声明「基础边界」及理由；不同框架有不同底（物理→实验定律与模型；数学→公理、定义、逻辑推断；编程→计算模型、逻辑、硬件机制；工程→物理约束与数学模型）。不递归基础术语，不编造唯一绝对底层，不生成无意义的递归定义。
+节点 ID 稳定 `NODE-\d{3,}`，`aliases` 别名映射，跨分支同一概念用 `canonical_id` 指向规范节点；不得仅因名称相近合并。基础深度按目标相对确定，到达真实边界时显式声明理由，不无限下钻。禁止目录式拆解（只列名词无机制/原理/依赖）。详见 [references/decomposition.md](references/decomposition.md) 与 [core/data-schema.md](core/data-schema.md)。
 
 ## 第一性原理分析
 
-对重要节点按 [references/first-principles.md](references/first-principles.md) 的 13 项框架（定义 / 动机 / 直觉 / 构成 / 机制 / 第一性原理 / 推导 / 依赖 / 关联 / 应用 / 局限 / 验证 / 延伸）**按需选取**，不为每个小概念机械输出 13 节。区分「已确立事实」与「简化类比」，不跳过必要的中间推理，不把类比当解释。
+13 项框架按需选取；每个重要节点写 `trace_chain`：节点 → 机制 → 支撑原理 → 基础边界，并明确回答「为什么成立」。做假设检查、推导条件检查、量纲/单位一致性（适用时）、反例与边界检查；区分定理 / 经验观测 / 模型 / 近似 / 假设 / 类比，不把类比当机制。详见 [references/first-principles.md](references/first-principles.md)、[assets/concept-analysis.md](assets/concept-analysis.md)。
 
-对每个重要节点写一条**原理追溯链**：`节点 → 机制 → 支撑原理 → 基础边界`，并明确回答「它为什么成立」。只给定义与举例不算解释；可推导的结论必须给推导路径或链接到反向教学任务。分析骨架见 [assets/concept-analysis.md](assets/concept-analysis.md)。
+## 教学、诊断与评估
 
-## 反向教学与知识迁移
+- **Atomic Lesson**：一次一个新机制，九段结构（目标 → 前置 → 直觉 → 定义 → 机制 → 原理连接 → 示例 → 验证 → 独立推理）。
+- **Integration Lesson**：把已学多个节点串成完整系统，不引入新基础材料、不重复讲单点。
+- 表征按知识类型选（图 / 推导 / 可跑代码 / 实验 / 类比+反例 / 时序图 / 状态表）；不理解时换表征、简化、回退前置、给新题，不重复原文。25 行是可读性指导，不是硬上限。
+- 误解诊断十类错误 + 证据门槛，见 [learning/misconception.md](learning/misconception.md)。
+- 评估十类、`evidence` 八字段、`confidence` 与 `mastery_level` 分轴；冲突证据并存、不得判 L4/L5；掌握度 0–5 定义见 [core/data-schema.md](core/data-schema.md)。
+- 复习按掌握度、近期表现、错误频率、难度、时间间隔、重要性差异化排程，见 [learning/spaced-review.md](learning/spaced-review.md)。
 
-详见 [references/transfer-reverse.md](references/transfer-reverse.md)。
+单课骨架：[assets/lesson.md](assets/lesson.md)。评估细则：[references/assessment.md](references/assessment.md)。
 
-**反向教学（bottom-up）**：从 L5/L6 原理出发，让用户逐层重建上层 —— 由原理推公式、由机制推行为、由组件推系统。用于 Deep Dive 收尾、Diagnose 补救、Level 5 验证。禁止以「复述刚才的讲解」代替推导。
+## 反向教学与迁移
 
-**知识迁移**：节点达到 L3 后必须给迁移任务，四类模板 —— 跨域同构、对象变化重参数化、远域连接、反事实与失效。Level 5（能推导、扩展或教会他人）**必须以迁移任务表现作为证据**，不以会做原题判定。
+从 L5/L6 原理出发逐层重建上层，七步不泄露结论。迁移任务写全 `target_node_id / required_prerequisites / transfer_distance / expected_reasoning / evaluation_criteria`；四类模板（跨域同构、对象变化、远域连接、反事实）不变。Level 5 必须有反向教学重建 + 两类以上迁移证据。不得把「缺前置」误判为「迁移能力不足」。详见 [references/transfer-reverse.md](references/transfer-reverse.md)。
 
-## 教学、练习与掌握度
+## 学习路径与闭环
 
-教学循环（[references/teaching.md](references/teaching.md)）：定位节点 → 探明已有理解 → 直觉先行 → 形式化定义 → 机制 → 回连前置 → 应用示范 → 请用户独立推理 → 依据回答评估。不理解时：定位误解 → 回退前置 → 换一种解释 → 给更简例 → 重测。单课骨架见 [assets/lesson.md](assets/lesson.md)。
+A 入门 / B 高效（默认）/ C 深研 + 目标导向路径；排序前置优先，关键路径按工期而非节点数计算。重排触发：掌握度变化、缺失前置、图变化、目标变化、时间约束、重复错误；保留已完成进度，不整表重建。
 
-循序渐进判据：**一课只引入一个新机制 / 新概念，讲解正文 ≤25 行**；起始确认前置、结尾必有独立推理任务与完成判据；收到作答后先给反馈，才进入下一课。禁止用大段文字墙代替交互。
+闭环由 [core/orchestrator.md](core/orchestrator.md) 控制：`INTAKE → CLASSIFY → MAP → VALIDATE → PLAN → DIAGNOSE → TEACH → ASSESS → REMEDIATE → REPLAN → PERSIST → CONTINUE`。每阶段有入口条件、成功判据、失败处理与事件写回；验证失败不得前进，中断可按 `current_stage` 恢复。
 
-练习七类（[references/assessment.md](references/assessment.md)）：理解 / 概念推理 / 计算 / 实现 / 调试 / 真实应用 / 迁移。掌握度 0 未学、1 认得、2 能解释、3 能独立应用、4 能分析陌生情境、5 能推导扩展或教会他人。只有作答、推理或实践产出可升级。
+## 状态、版本与资源
 
-**动态闭环**：诊断出薄弱点后执行「定位最早失败节点 → 定向回补 → 换题重测 → 重排路线图（插入复习节点 / 后移后继）→ 更新三图版本与 state → 给出新下一步」，见 [references/quality-gates.md](references/quality-gates.md) 的 G5。路线图不是一次生成后固定不变的。
+- 每个重要事件立即写回，不等会话结束；项目目录独立，状态字段由 `scripts/validate_state.py` 校验。
+- 版本化三图与节点，图变更不得清空已证明掌握度，仅必要时定向重评；快照与 changelog 见 [memory/version-control.md](memory/version-control.md)。
+- 资源必须绑定 `NODE-*`，记录 title/source/url/type/difficulty/language/relevant_node_ids/prerequisites/intended_use/last_verified；不编造 URL，未验证标 `last_verified: null`。资源不是掌握度证据。
 
-## 学习路径
+模板：[assets/progress-tracker.md](assets/progress-tracker.md)、`templates/knowledge-node.json`、`templates/learner-progress.json`。
 
-A 入门 / B 高效 / C 深研（[references/learning-paths.md](references/learning-paths.md)）。默认推荐 B 并说明理由；零基础或明确要系统学时给 A；要原理、机制、研究向时给 C。不把所有用户塞进最长路径，不以教材章节顺序替代依赖顺序。掌握度、薄弱点、新增前置、用户约束变化都会触发路径重排。
+## 确定性校验（不靠模型判断）
 
-## 学习状态管理
+```bash
+python scripts/validate_schema.py templates/knowledge-node.json --json
+python scripts/validate_map.py graph.json --strict --json
+python scripts/validate_references.py --json
+python scripts/validate_state.py state.json --json
+python scripts/check_consistency.py --json
+python scripts/run_tests.py --json
+```
 
-每个学习项目独立 state 文件（建议 `deeplearn-state/<project>.md`，从 [assets/progress-tracker.md](assets/progress-tracker.md) 初始化），记录：目标、分类、三图版本、已完成节点、各节点 mastery、证据摘要、薄弱点、当前位置、下一推荐任务、用户偏好。项目间状态不互通。更新前先读取；**不覆盖用户自建笔记或既有项目文件**，冲突时先说明并请求确认。详见 [references/state-management.md](references/state-management.md)。
-
-## 资源与研究
-
-仅当用户索要资源时按 [references/resources.md](references/resources.md) 执行：技术优先官方文档与规范，学术优先大学课程与教材，进阶优先原始论文；区分免费/付费，区分理论基础 / 官方规范 / 实现文档 / 实践教程。**不编造来源、引用或 URL**；无检索能力或链接未验证时明确标注「未验证」。
+脚本覆盖：必填字段、类型、枚举、ID 格式、交叉引用、重复 ID、缺失引用、自环、环、重复边、非法边类型、父子互逆、断连组件、证据结构、版本与历史、内部链接、跨模块枚举一致性。退出码 `0` 通过 / `1` 校验失败 / `2` 参数或解析错误；`--strict` 把警告也视为失败。**脚本不判定教学质量、解释正确性或迁移题质量**，这些由质量门禁自检清单约束。
 
 ## 输出格式
 
-按 Mode 输出对应字段（模板见 `assets/`）。所有 Mode 通用：首行「假设：…」，末行「下一步：…（2–3 个可选动作）」。禁止鼓励语、空泛形容词、重复解释、无判据的「已掌握」。Learn 模式一次只教一个节点。输出形态锚点见 [examples/academic-subject.md](examples/academic-subject.md)、[examples/individual-concept.md](examples/individual-concept.md)、[examples/practical-project.md](examples/practical-project.md)。
-
-每轮输出前按 [references/quality-gates.md](references/quality-gates.md) 的自检清单过一遍；门禁未过不得宣称拆解完成或标记掌握。
+按 Mode 输出对应字段（模板见 `assets/`）；通用首行「假设：…」、末行「下一步：…（2–3 个动作）」。禁止鼓励语、空泛形容词、无判据的「已掌握」。Learn 一次只教一个节点。格式锚点：[examples/academic-subject.md](examples/academic-subject.md)、[examples/individual-concept.md](examples/individual-concept.md)、[examples/technical-domain.md](examples/technical-domain.md)、[examples/practical-project.md](examples/practical-project.md)。每轮按 [references/quality-gates.md](references/quality-gates.md) 自检清单过一遍。
 
 ## 边界与禁止项
 
-- 不做通用辅导闲聊、不堆资料清单、不出习题答案、不做纯时间表、不生成课件或记忆卡片。
-- **不做目录式拆解**：不把列章节名、名词或功能清单当作拆完，不靠增加层级数冒充深度；L3 以下节点无机制或原理的一律不计入成果。
-- 不一次性倾倒几万字教学；不在前置未达标时教进阶；不把所有节点当同等重要。
-- 不把知识树当学习序列；不在依赖图里留环或孤立节点；不在结构图里表达「必须先于」。
-- 不虚构教材章节、版本、API、论文或 URL；不确定标「待核实」。
-- 不以「信息不足」终止；不评价用户是否适合学；不劝退或擅自缩减目标。
-- 不在用户只要一句话解释时强套三图与多段流程。
-- 不把任何具体学科、工具或项目写进规则本身 —— 本 Skill 的所有策略必须保持领域无关。
+- 不做通用辅导闲聊、不堆资料清单、不出习题答案、不做纯时间表、不生成课件。
+- 不做目录式拆解；不靠层级数冒充深度；L3 以下无机制或原理不计入成果。
+- 不一次性倾倒几万字教学；不在前置未达标时教进阶。
+- 不混淆知识树与依赖顺序、知识深度与掌握度、父子与前置、置信度与掌握度。
+- 不在依赖图里留环；不因节点无入边就一律拒绝；不把定义当解释，不把类比当机制。
+- 不无证据升级掌握度、不覆盖历史证据、不因图变化重置全部进度、不重建未变化的图。
+- 不虚构章节、版本、API、论文或 URL；不确定标「待核实」。
+- 不把具体学科、工具或项目写进规则本身；不把复杂流程强加给简单问题。
 
 ## 失败处理
 
 | 情形 | 动作 |
 |---|---|
-| 目标含糊 | 1 个澄清问题 + 基于默认假设的降级三图概览 |
-| 目标与时间明显冲突 | 给「最小可达子集」路线 + 列出未覆盖范围，不劝退 |
-| 复合 / 跨类目标 | 主策略 + 辅策略，三图仍只出一套 |
-| 依赖成环 | 拆「先会用 → 后懂原理」，注明代价 |
-| 原子节点过不了六问 | 继续下钻或补齐动机 / 依赖 / 推导 / 验证，不得放进路线图 |
-| 依赖图有孤立节点 | 补跨分支边或显式声明为基础边界，重跑 `--strict` |
-| 只有定义没有原理 | 补机制与原理追溯链，不输出「已完成拆解」 |
-| 无证据却声称掌握 | 撤回掌握度变更，补一道最小验证题 |
+| 目标含糊 | 1 个澄清 + 基于假设的降级概览 |
+| 目标与时间冲突 | 保留目标，给最小可达子集 + 未覆盖范围 |
+| 复合 / 跨类 | 主 + 辅策略，三图只出一套 |
+| `VALIDATE` 失败（环 / 孤立 / schema / 门禁） | **停在本阶段**，输出节点 ID 与修复动作，不生成路线图 |
+| 六问未过 / 关键维度 <2 | 继续下钻或补解释，不进路线图 |
+| 无证据却声称掌握 | 撤回变更，补最小验证题 |
+| 常规题通过但迁移失败 | 两条证据并存，不判 L4/L5，定位迁移缺口并重排 |
+| `PERSIST` 不可用 | 声明「仅会话内生效」，不假装已保存 |
 | 体系 / 版本不确定 | 标「待核实」继续，不编造 |
-| 用户加约束或换 Mode | 保留 state，只更新受影响图与路线 |
-| 无检索能力 | 资源标注「未验证」，其余流程照常 |
-| workspace 只读 | state 退化为会话内记忆，其余流程照常 |
 | 违法或有害目标 | 拒绝并说明原因 |
 
-通用：任何失败至少留下分类 + 全局概览 + 最小第一步。
+通用：任何失败都留下分类 + 概览 + 最小第一步。
