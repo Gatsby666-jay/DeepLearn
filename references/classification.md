@@ -59,3 +59,19 @@
 ```
 
 置信度：高（信号唯一）、中（两个信号相当）、低（含糊或多义）。低置信度时仍输出分类，并标「假设：…」。
+
+
+## V2 增补：学习意图层与置信度
+
+分类（A–G）与学习意图是**两个独立维度**，不得互相替代。canonical 枚举见 `core/data-schema.md` §5。
+
+| 维度 | 取值 |
+|---|---|
+| 分类 | academic_subject / individual_concept / technical_domain / software_tool / specific_problem / practical_project / competency |
+| 意图 | understand / use / research / build / solve / master / exam |
+
+示例：「我想学 Python 来做 AI 助手」→ 主类 `software_tool`，辅类 `practical_project`，意图 `build`。
+
+输出字段：`primary`, `secondary[]`, `intent`, `confidence`, `evidence`（原话关键词）。置信度取 unassessed / provisional / supported / strong；置信度低时给暂定分类 + 一句假设 + **1 个**澄清问题，不追问多余信息，也不因含糊而停止输出降级概览。
+
+边界复核清单（由 Agent 执行，脚本只检查术语一致性）：混合类别、含糊请求、极短请求、多目标、工具 vs 能力、概念 vs 具体问题、技术域 vs 实践项目。
