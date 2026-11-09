@@ -77,3 +77,12 @@ Deep Dive 收尾、Diagnose 补救、以及任何节点升到 L3 之后载入。
 - 反向教学暴露的缺口 → 在依赖图补一条 `prerequisites[]` 边。
 - 迁移成功 → 结构图该节点标记 `mastery: 5`，路线图推进到下一节点。
 - 若多个不同分支的节点反复出现同一条缺失前置 → 把该前置提升为 L5 基础单元，写进三图。
+
+
+## V2 增补：迁移任务字段与误判防范
+
+每个迁移任务必须写全：`target_node_id`, `required_prerequisites[]`, `transfer_distance`（近/中/远）, `expected_reasoning`, `evaluation_criteria`。四类模板不变。
+
+反向教学七步不变：给基础原理 → 隐藏目标结论 → 请学习者重建机制 → 定位缺失的推理步骤 → 回到相应前置 → 再重建 → 把结果应用到原问题。**不得在问题中泄露答案**。
+
+禁止：只换数字或名词的换皮原题；把「缺少前置知识」误判为「迁移能力不足」——前者补 `prerequisites`，后者给迁移任务。Level 5 需反向教学重建 + 至少两类迁移，且 `evaluation_criteria` 明确可判定。
