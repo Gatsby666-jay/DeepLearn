@@ -85,3 +85,14 @@
 | 一课塞了多个新概念 | 拆成多课，只保留当前一课 |
 | 无证据却声称掌握 | 撤回掌握度变更，补一道最小验证题 |
 | 诊断后未重排路线 | 执行 G5 六步闭环，不进入下一节点 |
+
+
+## V2 增补：类别感知、质量分与闭环门
+
+六问改为**类别感知**：每问 `passed` / `failed` / `not_applicable`，不适用给理由；不把无关问题强加给每个节点。
+
+分解质量分：六维各 0–2、总 12；`dependency_correctness` / `explanatory_depth` / `verifiability` 任一 <2 即门禁失败，总分不替代关键维度。字段与阈值由 `scripts/validate_schema.py` 做确定性校验。
+
+G4 的「≤25 行」是可读性指导而非硬上限；判据以「一课一个新机制 + 独立推理任务 + 反馈」为准。
+
+G5 闭环门补齐：`REMEDIATE → REPLAN → PERSIST → CONTINUE` 必须回流到 `TEACH` / `MAP` / `PLAN`，不得线性结束；无 `PERSIST` 不得 `CONTINUE`；`VALIDATE` 失败不得进入 `PLAN`。闭环定义见 `core/orchestrator.md`。
