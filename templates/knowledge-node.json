@@ -1,0 +1,48 @@
+{
+  "id": "NODE-001",
+  "name": "示例概念",
+  "description": "一个可用一句话表述、不含循环定义的知识节点。",
+  "aliases": ["示例节点"],
+  "canonical_id": null,
+  "parent_id": null,
+  "children": [],
+  "node_type": "concept",
+  "learning_category": "individual_concept",
+  "decomposition_level": 3,
+  "prerequisites": [],
+  "dependency_edges": [],
+  "difficulty": 3,
+  "importance": "essential",
+  "time_estimate": {
+    "min_hours": 1,
+    "max_hours": 3
+  },
+  "practical_value": "high",
+  "objectives": ["能独立解释该概念并给出一个反例"],
+  "mechanism": "按因果顺序列出它如何工作，不跳中间步骤。",
+  "principles": ["支撑它的基础原理"],
+  "trace_chain": ["示例概念", "运作机制", "支撑原理", "基础边界"],
+  "related_nodes": [],
+  "applications": ["一个真实场景"],
+  "limitations": ["明确写清失效条件"],
+  "verification_methods": ["完成一道可判定的最小验证题"],
+  "atomic_gate": {
+    "why_exists": {"status": "passed", "note": "为解决某类问题而提出"},
+    "problem_solved": {"status": "passed", "note": "没有它时需要重复手工推导"},
+    "depends_on": {"status": "not_applicable", "note": "本模板为根节点，无前置"},
+    "why_valid": {"status": "passed", "note": "由支撑原理保证"},
+    "derivable": {"status": "passed", "note": "可由原理逐步推出"},
+    "verifiable": {"status": "passed", "note": "最小验证题可判定"}
+  },
+  "decomposition_quality": {
+    "completeness": 2,
+    "independence": 2,
+    "dependency_correctness": 2,
+    "explanatory_depth": 2,
+    "verifiability": 2,
+    "boundary_clarity": 2,
+    "total": 12,
+    "critical_pass": true
+  },
+  "version": 1
+}
