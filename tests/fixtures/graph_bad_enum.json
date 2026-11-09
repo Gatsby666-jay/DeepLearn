@@ -1,0 +1,50 @@
+{
+  "nodes": [
+    {
+      "id": "NODE-001",
+      "name": "示例节点 NODE-001",
+      "description": "一句不含循环定义的表述。",
+      "aliases": [],
+      "canonical_id": null,
+      "parent_id": null,
+      "children": [],
+      "node_type": "not_a_type",
+      "learning_category": "technical_domain",
+      "decomposition_level": 3,
+      "prerequisites": [],
+      "dependency_edges": [],
+      "difficulty": 3,
+      "importance": "essential",
+      "time_estimate": {
+        "min_hours": 1,
+        "max_hours": 3
+      },
+      "practical_value": "high",
+      "objectives": [
+        "能解释并应用"
+      ],
+      "mechanism": "按因果顺序列出它如何工作。",
+      "principles": [
+        "支撑原理"
+      ],
+      "trace_chain": [
+        "NODE-001",
+        "机制",
+        "原理",
+        "基础边界"
+      ],
+      "related_nodes": [],
+      "applications": [
+        "真实场景"
+      ],
+      "limitations": [
+        "失效条件"
+      ],
+      "verification_methods": [
+        "最小验证题"
+      ],
+      "version": 1
+    }
+  ],
+  "edges": []
+}
