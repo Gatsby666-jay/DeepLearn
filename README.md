@@ -1,6 +1,6 @@
 # DeepLearn
 
-> 通用的知识拆解与学习引擎 Skill —— 把任何学习目标递归拆到知识原子，用三张图组织认知，用迁移任务验证真正理解。
+> 通用的知识拆解与学习引擎 Skill（v2.0）—— 把任何学习目标递归拆到知识原子，用三张图组织认知，用完整闭环与迁移任务验证真正理解。
 
 *A general-purpose Agent Skill for recursive knowledge decomposition, prerequisite graphs, progressive teaching, and transfer-based mastery.*
 
@@ -58,7 +58,7 @@ flowchart LR
 
 `数字逻辑` 与 `C 指针` 分属硬件层与软件层两个不同分支，却同时是 `中断` 的前置。依赖图必须无环、零孤立节点，由 `scripts/validate_map.py --strict` 校验后才允许生成路线图。
 
-## V2：从「目录」到「原子」
+## v1.1：从「目录」到「原子」
 
 第一版最容易被误用的地方，是把「拆得很细」当成「拆得很深」。V2 把这一点变成硬约束：
 
@@ -84,6 +84,46 @@ flowchart LR
 | G5 闭环门 | 没有可靠判断用户是否掌握 | 诊断 → 回补 → 换题重测 → 重排路线 → 更新三图与 state |
 
 反例：`概念 → 定义 / 性质 / 应用 / 常见题型` 这四行目录不算拆解；一个六问齐全的原子单元，比三十个只有名称的节点更有价值。`SKILL.md` 的工作原则、递归拆解、三图、教学与失败处理章节都已接入这些门禁，每轮输出前按自检清单过一遍。
+
+## v2.0：完整闭环架构
+
+> 版本线：v1.0 初始引擎 → v1.1 质量门禁与六问验收（下一节）→ **v2.0 完整闭环架构**。上一轮质量门禁曾标为 V2，现更正为 v1.1。
+
+**核心不是功能数量，而是闭环**：理解用户目标 → 构建知识网络 → 规划学习路线 → 自适应教学 → 检测真实掌握程度 → 纠错 / 调整路线 / 保存进度 → 继续学习（循环）。
+
+```mermaid
+flowchart LR
+  IN[理解目标] --> MAP[构建知识网络]
+  MAP --> PLAN[规划路线]
+  PLAN --> TEACH[自适应教学]
+  TEACH --> ASSESS[检测掌握]
+  ASSESS -->|通过| PERSIST[保存进度]
+  ASSESS -->|未通过| REM[纠错补救]
+  REM --> REPLAN[调整路线]
+  REPLAN --> PERSIST
+  PERSIST --> CONT[继续学习]
+  CONT -->|下一节点| TEACH
+  CONT -->|目标或图变化| MAP
+```
+
+闭环由 `core/orchestrator.md` 控制，12 阶段 `INTAKE → CLASSIFY → MAP → VALIDATE → PLAN → DIAGNOSE → TEACH → ASSESS → REMEDIATE → REPLAN → PERSIST → CONTINUE`，每阶段定义入口条件、输入、执行模块、输出、成功判据、失败处理与状态更新。四条硬规则：无证据不前进、失败必须回流、验证失败阻塞、持久化是闸门。
+
+| v2.0 新增 | 落点 |
+|---|---|
+| 统一数据架构 | `core/data-schema.md`：KnowledgeNode / LearnerProgress / DependencyEdge / canonical enums，三条轴严格分离 |
+| 五类工作流 | `core/orchestrator.md`：宽泛学习 / 单个概念 / 具体问题 / 实践项目 / 诊断式学习，不把复杂流程强加给简单问题 |
+| 学习意图层 | 分类与意图独立：understand / use / research / build / solve / master / exam |
+| 类别感知六问 + 质量分 | 每问可 `not_applicable` 并给理由；六维 0–2 分，关键维度单独设阈 |
+| 误解诊断 | `learning/misconception.md`：十类错误、根因定位、证据门槛 |
+| 间隔复习 | `learning/spaced-review.md`：六因素、四类复习、差异化排程 |
+| Atomic / Integration Lesson | 一节一个新机制；另有把已学节点串成系统的整合课 |
+| 版本与快照 | `memory/version-control.md`：图变更不擦除已证明掌握度，仅定向重评 |
+| 确定性校验 | `scripts/` 六个校验器 + `run_tests.py`，共享 `deeplearn_rules.py` 枚举 |
+| 可执行测试 | `tests/cases.json` + 14 个静态样本 |
+
+**V1 路径一个都没移动**。`references/`、`assets/`、`scripts/`、`examples/` 保持原位，新模块放进 `core/`、`learning/`、`memory/`、`templates/`、`tests/`；`core/orchestrator.md` 的路由表是职责归属的单一事实来源，规则只定义一次。
+
+`≤25 行` 从硬上限改为可读性指导；`--strict` 不再拒绝所有无入边节点 —— root、terminal、声明用途的独立可选概念都合法。
 
 ## 能力一览
 
@@ -146,27 +186,38 @@ git clone <本仓库地址> ~/.codebuddy/skills/deeplearn
 
 ```text
 deeplearn/
-├── SKILL.md                     # 触发条件、工作原则、分类、三图、递归、教学、Mode、边界
-├── README.md                    # 本文件（面向人类的仓库说明，Skill 运行时不加载）
-├── references/                  # 按需载入的方法论
-│   ├── classification.md        # 七类判定话术、边界样例、复合分类
-│   ├── decomposition.md         # 八问、L0–L6、节点 schema、六问验收门、基础边界、反目录化
-│   ├── three-graphs.md          # 三图定义、跨分支边清单、零孤立节点、破环与同步
-│   ├── first-principles.md      # 13 项框架、原理追溯链、六问映射
-│   ├── quality-gates.md         # V2：五道门禁、六问验收、自检清单、门禁失败动作
-│   ├── teaching.md              # 教学循环、循序渐进判据、自适应回退决策树
-│   ├── assessment.md            # 七类练习、0–5 证据规则、Diagnose、动态闭环
-│   ├── learning-paths.md        # A/B/C 生成规则、属性打分、阶段合并、动态重排
-│   ├── transfer-reverse.md      # 反向教学四步 + 四类迁移模板 + Level 5 判据
-│   ├── state-management.md      # state schema、项目隔离、闭环更新、不覆盖规则
-│   └── resources.md             # 资源分层、验证标注、无网降级
-├── assets/                      # 输出骨架，直接填充后交付
+├── SKILL.md                     # v2 入口：工作原则、模块路由、确定性校验、失败处理
+├── README.md                    # 面向人类的仓库说明
+├── CHANGELOG.md                 # 版本线、架构审计、实现状态分级
+├── core/
+│   ├── orchestrator.md          # 12 阶段生命周期、5 工作流、闭环、状态转换
+│   └── data-schema.md           # KnowledgeNode / LearnerProgress / 边 / 枚举（单一事实来源）
+├── references/                  # V1 路径保留，11 份方法论均追加 v2 增补
+│   ├── classification.md  ├── decomposition.md  ├── three-graphs.md
+│   ├── first-principles.md  ├── quality-gates.md  ├── teaching.md
+│   ├── assessment.md  ├── transfer-reverse.md  ├── learning-paths.md
+│   ├── state-management.md  └── resources.md
+├── learning/                    # v2 新增
+│   ├── misconception.md         # 十类误解、六步诊断、证据门槛
+│   └── spaced-review.md         # 六因素、四类复习、差异化排程
+├── memory/
+│   └── version-control.md       # 版本、快照、图变更不擦除掌握度
+├── templates/                   # v2 结构化模板
+│   ├── knowledge-node.json  └── learner-progress.json
+├── assets/                      # V1 输出骨架（含 v2 增补）
 │   ├── knowledge-map.md  ├── prerequisite-graph.md  ├── learning-roadmap.md
 │   ├── concept-analysis.md  ├── lesson.md  └── progress-tracker.md
-├── scripts/
-│   └── validate_map.py          # 环检测 / 拓扑序 / 阶段建议 / --strict 零孤立门禁
-└── examples/                    # 三个首轮响应格式锚点
-    ├── academic-subject.md  ├── individual-concept.md  └── practical-project.md
+├── scripts/                     # 确定性验证，零第三方依赖
+│   ├── deeplearn_rules.py       # 枚举与必填字段的可执行单一事实来源
+│   ├── validate_map.py          # 图校验（兼容 V1 Mermaid / 简单 JSON 输入）
+│   ├── validate_schema.py  ├── validate_references.py  ├── validate_state.py
+│   ├── check_consistency.py  └── run_tests.py
+├── tests/
+│   ├── cases.json               # 34 用例：19 确定性 + 12 契约 + 3 未自动化
+│   └── fixtures/                # 14 个静态 JSON 样本（正常与各类失败）
+└── examples/
+    ├── academic-subject.md  ├── individual-concept.md
+    ├── technical-domain.md  └── practical-project.md
 ```
 
 `SKILL.md` 保持精简，全部资源从其中直接链接并写明「何时载入」；无空目录、无占位标记、无引用套引用。
@@ -195,6 +246,10 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 
 | 项目 | 结果 |
 |---|---|
+| `scripts/run_tests.py` v2.0 全套 | **34 用例：31 通过、0 失败、3 项主观能力标注为未自动化** |
+| `validate_map.py` 增强图校验 | 重复 ID / 缺失引用 / 自环 / 环 / 重复边 / 非法枚举 / 断连分量 / 六问门禁，均有失败样本并通过断言 |
+| `validate_schema.py`、`validate_state.py` | 模板通过；非法字段、非法掌握度、冲突证据均被拒绝 |
+| `validate_references.py`、`check_consistency.py` | 92 处内部引用有效；枚举文档与代码一致；7 个脚本可编译 |
 | `skill-maker/scripts/quick_validate.py` | 通过 —— frontmatter、name 与目录名一致、description、无待办标记、本地链接全部有效 |
 | `skill-creator/scripts/package_skill.py` | `Skill is valid!`，成功打包 `deeplearn.zip` |
 | `validate_map.py` 正常用例（8 节点跨分支图） | 退出 0 —— 起点正确、拓扑序、4 个建议阶段、终点节点 |
@@ -227,21 +282,23 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 
 边界用例：「学点东西」→ 1 个澄清 + 降级概览；「为做智能车学嵌入式」→ F 主 C 辅、只出一套三图；「三天精通量子场论」→ 最小可达子集 + 未覆盖范围。V2 复核额外检查：原子节点过六问、L3 以下有机制或原理、依赖图零孤立且有跨分支边、重要节点有原理追溯链、一课一个新机制、诊断后重排路线图。
 
-**诚实说明**：上述 13 项 dry-run 是**依据 SKILL.md 规则的人工推演**，用于检查规则覆盖与一致性，并非在真实 Agent 运行时自动执行的回归测试。门禁是规则级检查，依赖执行 Agent 自觉运行自检清单，无法在宿主层强制拦截。尚未验证：不同宿主平台对 Mermaid 的渲染、真实会话中的 state 持久化、联网时的资源链接有效性。
+**诚实说明**：v2.0 的 12 个生命周期用例是「文档契约检查 + 确定性脚本断言」，不是真实 Agent 端到端回归；3 项主观能力（教学质量、误解根因准确度、真迁移判定）在测试报告中明确标为 `SKIP_NOT_AUTOMATED`，没有伪装成通过。上述 13 项 dry-run 是**依据 SKILL.md 规则的人工推演**，用于检查规则覆盖与一致性，并非在真实 Agent 运行时自动执行的回归测试。门禁是规则级检查，依赖执行 Agent 自觉运行自检清单，无法在宿主层强制拦截。尚未验证：不同宿主平台对 Mermaid 的渲染、真实会话中的 state 持久化、联网时的资源链接有效性。
 
 ## 已知限制
 
 - 无网络时资源一律标注「未验证」，只给检索关键词，不伪造链接。
 - state 需要可写 workspace；只读环境退化为会话内记忆并显式声明。
 - 掌握度依据用户作答文本判定，不能自动验证代码正确性。
-- 五道门禁靠 Agent 自检执行，不是宿主强制的运行时校验；`--strict` 只覆盖 G2 中可图论化的部分。
+- 五道门禁靠 Agent 自检执行，不是宿主强制的运行时校验；脚本只校验提交给它的结构化数据，不能保证 Agent 每次都生成合规 JSON。
+- 自适应教学质量、类比恰当性、迁移题是否为真迁移，无法由 Python 判定（N1–N3 未自动化）。
 - 时长是估算区间（默认按每周 3–5 小时），不是精确承诺。
 - 大目标的准确性依赖 Agent 自身的领域知识；规则能防止「跳前置」和「假装掌握」，不能替代事实核查。
 
-## 后续改进
+## v3 方向（建议）
 
 - 接入可运行沙盒，自动判题并把结果写回掌握度。
 - 节点 schema 导出 JSON，供外部图工具与可视化复用。
 - 加入间隔重复复习调度，把薄弱前置自动排进后续阶段。
-- 把六问验收做成可机读的节点字段校验脚本，减少依赖 Agent 自觉。
+- 把六问验收与质量分接入真实会话的运行时断言，而不仅是提交后的静态校验。
+- 增加真实 Agent 端到端回归：用固定学习目标跑完整闭环并比对 state 事件序列。
 - 多项目 state 索引与跨项目通用前置复用。
