@@ -64,3 +64,14 @@
 6. 输出新的「下一步」，不直接进入原计划的下一节点。
 
 触发重排的事件：掌握度变化、发现薄弱前置、补依赖边、破环、用户追加约束、切换 Mode。路线图不是一次生成后固定不变的；未重排就继续下一节点视为门禁失败。
+
+
+## V2 增补：十类评估、证据与冲突
+
+评估类型（canonical 枚举见 `core/data-schema.md`）：recall / explanation / application / derivation / debugging / prediction / counterexample / reverse_teaching / cross_domain_transfer / changed_condition_transfer。
+
+每次掌握度变更写一条 `evidence`：`node_id, assessment_type, result, reasoning_quality, error_type, date, mastery_decision, confidence`。`confidence`（unassessed / provisional / supported / strong）与 `mastery_level` **不同轴**；置信度低于 supported 不得触发升级。
+
+**冲突证据**：常规题通过但迁移任务失败时，两条证据都保留，不得用后者覆盖前者；不得判 L4/L5；定位缺失的迁移能力，设计针对性练习并触发路线重排。只做对原题最高记 L3。
+
+延迟重评：按 `last_assessed`、错误频率、难度与遗忘风险安排，见 `learning/spaced-review.md`；重评写新 evidence，不改历史记录。
