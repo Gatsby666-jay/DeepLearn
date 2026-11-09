@@ -39,3 +39,12 @@
 - 不把资源清单当作拆解或路线图的替代品。
 - 不因用户没要资源就主动贴链接。
 - 不引用不存在的论文、课程编号或章节。
+
+
+## V2 增补：节点绑定与字段
+
+每条资源（信息可得时）记录：`title, source, url, resource_type, difficulty, language, relevant_node_ids[], prerequisites[], intended_use, last_verified`。
+
+优先级：官方文档 > 权威教材 / 大学材料 > 高质量教程 > 实践项目 > 社区讨论。必须区分**学习解释**（Skill 自己产出）、**外部学习资源**、**实践练习**；资源不是掌握度证据。
+
+不得编造 URL；未验证写 `last_verified: null` 并标注「未验证」。资源必须挂到具体 `NODE-*`，不输出无节点映射的清单。
