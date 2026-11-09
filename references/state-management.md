@@ -75,3 +75,14 @@ updated: <日期>
 - 完整讲解文本、练习答案全文、资源清单、临时澄清问题。
 - 其它学习项目的任何字段。
 - 用户未确认的推测性掌握度。
+
+
+## V2 增补：事件驱动持久化
+
+不依赖「会话结束统一保存」。每个重要事件立即写回：project_created / classification_confirmed / map_generated / graph_changed / lesson_completed / assessment_completed / mastery_updated / misconception_found / roadmap_changed / review_completed。
+
+`state.json` 必填：`project_id, status, current_stage, versions, progress[], events[], history[]`；可选 `current_node, next_task, weak_nodes, review_schedule`。结构由 `scripts/validate_state.py` 校验，`current_stage` 取 `core/orchestrator.md` 的 12 阶段之一。
+
+项目目录独立：`deeplearn-state/<project>/{state.json, knowledge-map.md, dependency-graph.md, roadmap.md, progress.json, review-schedule.json, changelog.md, history/}`。版本与快照见 `memory/version-control.md`。
+
+写入六步：读现有 → 校验结构 → 识别人工编辑 → 只写必要变更 → 保留 `evidence` 与 `history` → 再校验。不可写时声明「本次仅会话内生效」。中断恢复按 `current_stage` 继续，不重建未变化的图。
