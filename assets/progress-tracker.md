@@ -37,3 +37,20 @@ updated: {{YYYY-MM-DD}}
 - `mastery` 只在有作答、推理或实践产出时更新（见 assessment.md）。
 - 用户手工编辑过的内容一律保留。
 - workspace 不可写时声明「本次进度未持久化」，不报错中断。
+
+
+## V2 事件驱动字段（追加到 state 模板）
+
+```markdown
+current_stage: {{INTAKE..CONTINUE 之一}}
+versions: {knowledge_map: {{n}}, dependency_graph: {{n}}, roadmap: {{n}}, state: {{n}}}
+events:            # 只追加，事件枚举见 core/data-schema.md
+  - event: {{project_created 等}}
+    date: {{YYYY-MM-DD}}
+    detail: {{一句}}
+history:
+  - {{snapshot-001}}
+review_schedule: {{见 learning/spaced-review.md}}
+```
+
+每次重要事件立即写回，不等会话结束；`scripts/validate_state.py` 校验结构与证据完整性。
