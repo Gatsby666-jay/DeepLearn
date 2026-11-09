@@ -6,6 +6,7 @@
 
 用法：
   python validate_map.py graph.mmd
+  python validate_map.py graph.mmd --strict   # G2 零孤立节点门禁
   python validate_map.py graph.json --json
   cat graph.mmd | python validate_map.py -
 
@@ -16,7 +17,7 @@
 
 退出码：
   0  无环，图可用
-  1  检测到环（或图为空）
+  1  检测到环、图为空，或 --strict 下存在孤立节点
   2  参数错误 / 解析失败
 """
 from __future__ import annotations
@@ -165,6 +166,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="校验 DeepLearn 知识依赖图")
     parser.add_argument("path", help="Mermaid/JSON 文件路径，'-' 表示从 stdin 读取")
     parser.add_argument("--json", action="store_true", help="以 JSON 输出结果")
+    parser.add_argument("--strict", action="store_true", help="G2 门禁：存在孤立节点即失败")
     args = parser.parse_args()
 
     try:
@@ -197,16 +199,23 @@ def main() -> int:
         print("建议阶段：" + " | ".join("S{}: {}".format(i + 1, ", ".join(s))
                                        for i, s in enumerate(result["stages"])))
         if result["isolated"]:
-            print(f"警告：孤立节点 {', '.join(result['isolated'])}（无前置、无后继，需补依赖边）")
+            label = "错误" if args.strict else "警告"
+            print(f"{label}：孤立节点 {', '.join(result['isolated'])}（无前置、无后继，需补依赖边或声明为基础边界）")
         if result["terminals"]:
             print(f"终点节点：{', '.join(result['terminals'])}")
         if result["has_cycle"]:
             print("错误：检测到循环依赖 " + " -> ".join(result["cycle"]))
             print("处理：把环上某节点拆为「先会用 → 后懂原理」两步后重新校验")
+        elif args.strict and result["isolated"]:
+            print("校验失败（strict）：存在孤立节点，按 G2 门禁不得生成路线图")
         else:
             print("校验通过：依赖图无环，可用于生成学习路线图")
 
-    return 1 if result["has_cycle"] else 0
+    if result["has_cycle"]:
+        return 1
+    if args.strict and result["isolated"]:
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
