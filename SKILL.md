@@ -1,9 +1,9 @@
 ---
 name: deeplearn
-description: 当用户提出学习目标、要求搞懂某个概念或原理、拆解一门学科或技术、上手某个工具、追问「为什么／怎么工作」、做一个项目或练成一项能力时触发；由 Orchestrator 驱动完整学习闭环，先分类并生成知识结构图、知识依赖图、学习路线图，按统一 schema 递归拆解到知识原子，通过自适应教学、误解诊断、证据化评估与动态重排验证真实理解。不适用于只要一句话解释、索要习题答案、生成课件或资料清单、制定纯时间表。
+description: 当用户提出学习目标、要求搞懂某个概念或原理、拆解一门学科或技术、上手某个工具、追问「为什么／怎么工作」、做一个项目或练成一项能力时触发；建立学习者画像与能力模型，生成知识结构图／依赖图／路线图，按证据自适应决策，通过练习、实验与项目验证能力，追踪长期成长，并用 Benchmark 回归教学质量。不适用于只要一句话解释、索要习题答案、生成课件或资料清单、制定纯时间表。
 ---
 
-# DeepLearn V2
+# DeepLearn V3
 
 ## 核心目标
 
@@ -12,6 +12,8 @@ description: 当用户提出学习目标、要求搞懂某个概念或原理、�
 **拆解深度不等于目录长度。** 真正的深度是能回答：为什么这个知识存在、解决什么问题、依赖什么基础、为何成立、能否从原理推出、如何证明真的懂了。
 
 V2 最重要的不是功能数量，而是**完整闭环**：理解目标 → 构建知识网络 → 规划路线 → 自适应教学 → 检测掌握 → 纠错 / 调整路线 / 保存进度 → 继续学习（循环）。
+
+V3 从 Knowledge-Centered 升级为 **Learner-Centered Competency Development**：理解学习者起点与缺口、把知识掌握（L0–L5）与能力水平（C0–C5）彻底分离、通过实践与实验验证能力、按证据动态演进知识图谱、长期追踪成长。核心信条：知识是基础，理解是过程，能力是目标，证据是标准。
 
 ## 工作原则（硬约束）
 
@@ -22,6 +24,10 @@ V2 最重要的不是功能数量，而是**完整闭环**：理解目标 → �
 5. 不以「已讲解」判定掌握；升级必须有练习、推理或实践证据。
 6. 每个原子单元过「六问验收门」并满足五道质量门禁（[references/quality-gates.md](references/quality-gates.md)）；任一门未过不得推进。
 7. 闭环不得线性结束：`REMEDIATE → REPLAN → PERSIST → CONTINUE` 必须回流到 `TEACH` / `MAP` / `PLAN`；`VALIDATE` 失败停在 `VALIDATE`。
+8. **知识掌握度 ≠ 能力等级**：L0–L5 与 C0–C5 独立记录，不得互相推导；能力升级必须有 `PracticeEvidence`。
+9. **证据来源必须区分** `self_report` / `model_inference` / `objective_assessment`；自评与模型推断不得直接提升掌握度或能力。
+10. **实验真实性**：`execution_status` 为 `theoretical` / `simulated` / `not_run` 时不得声称实验成功，也不得支撑 C4/C5。
+11. **能力降级**：多模态/代码执行能力先探测，不支持时明确标注并给替代方法，不得静默降级。
 
 ## V2 架构与入口（单一事实来源）
 
@@ -136,7 +142,15 @@ python scripts/validate_roadmap.py roadmap.json --json
 python scripts/validate_references.py --json
 python scripts/validate_state.py state.json --json
 python scripts/check_consistency.py --json
+python scripts/validate_v3_schema.py state.json --json
+python scripts/decision_engine.py context.json --json
+python scripts/competency_engine.py evidence.json --json
+python scripts/practice_engine.py validate task.json --json
+python scripts/knowledge_evolution.py proposal.json --json
+python scripts/migrate_v2_v3.py verify --source old.json --migrated new.json
+python scripts/run_benchmark.py --json
 python scripts/run_tests.py --json
+python scripts/run_v3_tests.py --json
 ```
 
 脚本分工：`validate_schema.py` 管字段、枚举、父子引用与门禁条件必填；`validate_map.py` 管图结构（重复 ID、缺失引用、自环、环、重复边、边类型、断连分量、孤立节点）；`validate_roadmap.py` 管阶段拓扑序、缺失前置、阶段引用、关键路径工期与非法时长；`validate_state.py` 管证据、掌握度、历史与阶段事件一致性；`validate_references.py` 管内部链接；`check_consistency.py` 管跨模块枚举与脚本可编译性。退出码 `0` 通过 / `1` 校验失败 / `2` 参数或解析错误；`--strict` 阻断孤立节点，但**合法多连通分量只作警告**。**脚本不判定教学质量、解释正确性或迁移题质量**，这些由质量门禁自检清单约束。
@@ -155,6 +169,7 @@ python scripts/run_tests.py --json
 - 不无证据升级掌握度、不覆盖历史证据、不因图变化重置全部进度、不重建未变化的图。
 - 不虚构章节、版本、API、论文或 URL；不确定标「待核实」。
 - 不把具体学科、工具或项目写进规则本身；不把复杂流程强加给简单问题。
+- 不因一次错误答案重构知识图谱；不因单个 mastery 数字做关键决策；不用无依据的精确数字伪装学习测量。
 
 ## 失败处理
 
@@ -172,3 +187,23 @@ python scripts/run_tests.py --json
 | 违法或有害目标 | 拒绝并说明原因 |
 
 通用：任何失败都留下分类 + 概览 + 最小第一步。
+
+
+## V3 引擎与入口（V2 全部保留）
+
+| 引擎 | 权威目录 / 脚本 |
+|---|---|
+| Learner Intelligence | `intelligence/learner-model.md`、`intelligence/adaptive-engine.md`、`intelligence/decision-engine.md`（实现 `scripts/decision_engine.py`） |
+| Knowledge Evolution | `knowledge/knowledge-evolution.md`、`relationship-engine.md`、`provenance.md`（实现 `scripts/knowledge_evolution.py`） |
+| Competency | `competency/competency-schema.md`、`competency-map.md`、`competency-assessment.md`、`competency-rubrics.md`（实现 `scripts/competency_engine.py`） |
+| Practice | `practice/exercise-engine.md`、`experiment-engine.md`、`project-engine.md`、`practice-assessment.md`（实现 `scripts/practice_engine.py`） |
+| Multimodal | `multimodal/input-adapters.md`、`multimodal/image-learning.md`、`multimodal/code-learning.md`、`multimodal/capability-fallback.md` |
+| Evaluation & Benchmark | `evaluation/learning-evaluation.md`、`evaluation/teaching-quality.md`、`evaluation/benchmark.md`（实现 `scripts/run_benchmark.py`） |
+| 统一数据模型 | `core/v3-schema.md` + `scripts/v3_rules.py` + `templates/v3-*.json` |
+| 迁移与回滚 | `docs/V3_MIGRATION.md` + `scripts/migrate_v2_v3.py` + `scripts/test_migration.py` |
+| 测试与基准 | `tests/v3_cases.json` + `scripts/run_v3_tests.py` + `benchmarks/cases.json` |
+| 集成契约 | `core/v3-integration.md`、`docs/V3_BASELINE.md`、`docs/V3_ARCHITECTURE.md`、`docs/V3_TEST_REPORT.md`、`docs/V3_ROADMAP.md` |
+
+V3 在 V2 的 12 阶段接入点注入（见 `core/v3-integration.md`），**不重写 Orchestrator、不改动 V2 schema、不删除 V2 测试**。旧 `state.json` 可安全读取，迁移只增字段不推断能力。
+
+**V3 使用说明**：新项目直接说学习目标；系统自动建立画像、决策下一步并生成练习/实验/项目任务。旧项目用 `migrate_v2_v3.py backup → migrate → verify` 迁移（务必保留备份，可 `rollback`）。查看基线/架构/迁移/测试/路线见 `docs/`。运行 `run_v3_tests.py` 与 `run_benchmark.py` 做回归。
