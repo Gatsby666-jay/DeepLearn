@@ -1,0 +1,25 @@
+{
+  "project_id": "PROJECT-001",
+  "goal": "制作 STM32 智能小车",
+  "nodes": [
+    {
+      "node_id": "NODE-001",
+      "mastery_level": 3,
+      "confidence": "supported",
+      "evidence_count": 2,
+      "importance": "essential",
+      "review_status": "not_scheduled",
+      "recent_errors": 0,
+      "prerequisite_gaps": []
+    }
+  ],
+  "competency_progress": [
+    {
+      "competency_id": "COMP-001",
+      "proficiency_level": "C2"
+    }
+  ],
+  "common_errors": [],
+  "preferences": {},
+  "time_constraint_hours": 5
+}
