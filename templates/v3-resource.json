@@ -1,0 +1,18 @@
+{
+  "resource_id": "RES-001",
+  "title": "示例官方文档",
+  "source": "official",
+  "url": null,
+  "resource_type": "official_documentation",
+  "difficulty": 2,
+  "language": "zh",
+  "relevant_node_ids": [
+    "NODE-001"
+  ],
+  "prerequisites": [],
+  "intended_use": "查阅规范",
+  "last_verified": null,
+  "verification_status": "unverified",
+  "schema_version": 3,
+  "created_at": "2026-11-12"
+}
