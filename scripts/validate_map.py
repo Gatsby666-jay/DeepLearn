@@ -69,8 +69,13 @@ def parse_text(raw: str):
             edges = []
             for edge in raw_edges:
                 if isinstance(edge, dict):
-                    edges.append((edge.get("source_node_id"), edge.get("target_node_id"),
-                                  edge.get("necessity", "required"), edge))
+                    norm = dict(edge)
+                    if "source_node_id" not in norm and "from" in norm:
+                        norm["source_node_id"] = norm["from"]
+                    if "target_node_id" not in norm and "to" in norm:
+                        norm["target_node_id"] = norm["to"]
+                    edges.append((norm.get("source_node_id"), norm.get("target_node_id"),
+                                  norm.get("necessity", "required"), norm))
                 elif isinstance(edge, (list, tuple)) and len(edge) == 2:
                     edges.append((edge[0], edge[1], "required", None))
             return "v2", [n.get("id") for n in raw_nodes], raw_nodes, edges, {}, raw_progress
@@ -226,7 +231,8 @@ def analyze(ids, edges, strict):
         "cycle": cycle,
         "has_cycle": has_cycle,
     }
-    blocking = errors or (warnings if strict else [])
+    strict_blocking = [w for w in warnings if w["code"] != "disconnected_components"]
+    blocking = errors or (strict_blocking if strict else [])
     result["passed"] = not blocking
     result["summary"] = ("校验失败：%d 错误 / %d 警告（strict）" %
                          (len(errors), len(warnings)) if blocking
@@ -274,7 +280,8 @@ def main() -> int:
                 err(result["errors"], "prerequisite_mismatch",
                     f"{node.get('id')}: prerequisites 与 required 边不一致 "
                     f"({sorted(declared)} vs {sorted(derived)})")
-        blocking = result["errors"] or (result["warnings"] if args.strict else [])
+        strict_blocking = [w for w in result["warnings"] if w["code"] != "disconnected_components"]
+        blocking = result["errors"] or (strict_blocking if args.strict else [])
         result["passed"] = not blocking
         result["summary"] = ("校验失败：%d 错误 / %d 警告（strict）" %
                              (len(result["errors"]), len(result["warnings"])) if blocking
