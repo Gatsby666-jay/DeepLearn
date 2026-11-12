@@ -1,0 +1,26 @@
+{
+  "exercise_id": "TASK-001",
+  "target_node_ids": [
+    "NODE-001"
+  ],
+  "target_competencies": [
+    "COMP-001"
+  ],
+  "practice_type": "concept",
+  "difficulty": 2,
+  "prerequisites": [],
+  "task": "用自己的话解释该机制并给出一个反例",
+  "expected_output": "一段可判定的解释 + 一个反例",
+  "hints": [
+    "只有一条"
+  ],
+  "evaluation_criteria": [
+    "机制表述完整",
+    "反例成立"
+  ],
+  "common_misconceptions": [],
+  "solution_visibility": "after_attempt",
+  "schema_version": 3,
+  "created_at": "2026-11-12",
+  "source": "template"
+}
