@@ -1,0 +1,18 @@
+{
+  "event_id": "EVENT-001",
+  "project_id": "PROJECT-001",
+  "event_type": "assessment_completed",
+  "occurred_at": "2026-11-12",
+  "node_ids": [
+    "NODE-001"
+  ],
+  "competency_ids": [
+    "COMP-001"
+  ],
+  "payload": {
+    "detail": "示例事件"
+  },
+  "evidence_refs": [],
+  "source": "template",
+  "schema_version": 3
+}
