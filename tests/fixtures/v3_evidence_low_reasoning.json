@@ -1,0 +1,33 @@
+{
+  "evidence_id": "PEV-001",
+  "project_id": "PROJECT-001",
+  "exercise_id": "TASK-001",
+  "node_ids": [
+    "NODE-001"
+  ],
+  "competency_ids": [
+    "COMP-001"
+  ],
+  "scores": {
+    "result_correctness": 2,
+    "reasoning": 0,
+    "method": 2,
+    "independence": 2,
+    "anomaly_handling": 2,
+    "constraint_satisfaction": 2,
+    "explainability": 2
+  },
+  "hint_level_used": 0,
+  "execution_status": "executed",
+  "independence": 2,
+  "anomaly_handling": 2,
+  "result": "pass",
+  "reasoning": "过程可复核",
+  "evidence_source": "objective_assessment",
+  "evidence_types": [
+    "anomaly_resolution"
+  ],
+  "occurred_at": "2026-11-12",
+  "schema_version": 3,
+  "source": "objective_assessment"
+}
