@@ -73,7 +73,12 @@ def main() -> int:
         for rel in ("core/orchestrator.md", "core/data-schema.md",
                     "references/quality-gates.md", "learning/misconception.md",
                     "learning/spaced-review.md", "memory/version-control.md",
-                    "scripts/run_tests.py"):
+                    "scripts/run_tests.py", "core/v3-schema.md",
+                    "core/v3-integration.md", "intelligence/decision-engine.md",
+                    "competency/competency-schema.md", "practice/exercise-engine.md",
+                    "multimodal/capability-fallback.md", "evaluation/benchmark.md",
+                    "scripts/v3_rules.py", "scripts/migrate_v2_v3.py",
+                    "scripts/run_v3_tests.py", "benchmarks/cases.json"):
             if rel not in skill_text:
                 errors.append({"code": "missing_entry_link",
                                "message": f"SKILL.md 未引用核心模块 {rel}"})
