@@ -101,6 +101,30 @@ def check_state(doc, errors, warnings, where):
             if not item or not isinstance(item, (str, dict)):
                 err(errors, "invalid_history", f"{where}: history[{i}] 为空或类型非法")
 
+    # v2.1: evidence decision / history / stage-event consistency
+    if isinstance(progress, list):
+        for i, item in enumerate(progress):
+            if not isinstance(item, dict):
+                continue
+            items = item.get("evidence", []) or []
+            level = item.get("mastery_level")
+            if is_int(level) and items:
+                decisions = {e.get("mastery_decision") for e in items if isinstance(e, dict)}
+                if level not in decisions:
+                    err(errors, "mastery_evidence_mismatch",
+                        f"{where}: progress#{i} mastery={level} 与 evidence.mastery_decision={sorted(decisions)} 不一致")
+    if isinstance(history, list) and not history:
+        err(errors, "history_missing",
+            f"{where}: history 为空，历史快照或证据可能已被覆盖")
+    stage = doc.get("current_stage")
+    late = {"ASSESS", "REMEDIATE", "REPLAN", "PERSIST", "CONTINUE"}
+    if stage in late and isinstance(events, list):
+        names = {e.get("event") for e in events if isinstance(e, dict)}
+        if not (names & {"assessment_completed", "lesson_completed", "mastery_updated",
+                         "misconception_found", "map_generated"}):
+            err(errors, "stage_event_mismatch",
+                f"{where}: current_stage={stage} 但事件序列仍停留在创建阶段")
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="校验 DeepLearn V2 学习状态")
