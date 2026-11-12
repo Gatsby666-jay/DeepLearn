@@ -1,6 +1,6 @@
 # DeepLearn
 
-> 通用的知识拆解与学习引擎 Skill（v2.0）—— 把任何学习目标递归拆到知识原子，用三张图组织认知，用完整闭环与迁移任务验证真正理解。
+> 通用的自适应学习引擎 Skill（v3.0）—— 把任何学习目标递归拆到知识原子，用三张图组织认知，用完整闭环与迁移任务验证真正理解。
 
 *A general-purpose Agent Skill for recursive knowledge decomposition, prerequisite graphs, progressive teaching, and transfer-based mastery.*
 
@@ -246,6 +246,9 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 
 | 项目 | 结果 |
 |---|---|
+| `scripts/run_v3_tests.py` v3.0 全套 | **47 用例：44 通过 / 0 失败 / 3 未自动化**；含 8 场景 A–H 决策断言、10 模板校验、迁移全流程 |
+| `scripts/run_benchmark.py` | 12 领域 Benchmark：**12 通过 / 0 失败**（数学基础…工程项目） |
+| V2 `run_tests.py` 回归 | 47 用例：44 通过 / 0 失败 / 3 未自动化，V3 升级后未退化 |
 | `scripts/run_tests.py` v2.1 全套 | **47 用例：44 通过、0 失败、3 项主观能力标注为未自动化**（29 脚本断言 + 12 契约检查 + 3 串联场景） |
 | `validate_roadmap.py` | 阶段拓扑序 / 缺失前置 / 阶段引用 / 关键路径工期 / 非法时长，4 个用例全部通过 |
 | 验收缺陷回归 G1–G6 | 六问门禁、证据决策、历史保护、阶段事件、strict 多分支、别名边，全部按预期被拒或通过 |
@@ -305,3 +308,25 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 - 把六问验收与质量分接入真实会话的运行时断言，而不仅是提交后的静态校验。
 - 增加真实 Agent 端到端回归：用固定学习目标跑完整闭环并比对 state 事件序列。
 - 多项目 state 索引与跨项目通用前置复用。
+
+
+## v3.0：以学习者为中心的能力成长系统
+
+> 知识是基础，理解是过程，能力是目标，证据是标准，持续成长是最终结果。
+
+V3 在 V2 闭环之上增加六大引擎，**V2 的 64 个文件、47 个测试、12 阶段 Orchestrator 与统一 schema 全部保留**：
+
+| 升级 | 落点 |
+|---|---|
+| 学习者动态画像（六态知识状态、偏好权重、效率分析） | `intelligence/`、`core/v3-schema.md` |
+| 知识与能力彻底分离（`NODE-*` L0–L5 vs `COMP-*` C0–C5） | `competency/`、`scripts/competency_engine.py` |
+| 练习/实验/项目驱动（十类练习、三级提示、七维评价、真实性分级） | `practice/`、`scripts/practice_engine.py` |
+| 知识图谱按证据演进（变更提案、七种关系、来源可信度） | `knowledge/`、`scripts/knowledge_evolution.py` |
+| 统一自适应决策（九项输出、六级优先级、必给理由） | `intelligence/decision-engine.md`、`scripts/decision_engine.py` |
+| 多模态适配与能力降级 | `multimodal/` |
+| 学习效果/教学质量评价与 12 领域 Benchmark | `evaluation/`、`benchmarks/`、`scripts/run_benchmark.py` |
+| V2→V3 迁移（备份 / 校验 / 回滚 / 报告） | `docs/V3_MIGRATION.md`、`scripts/migrate_v2_v3.py` |
+
+详见 `docs/V3_ARCHITECTURE.md`、`docs/V3_BASELINE.md`、`docs/V3_TEST_REPORT.md`、`docs/V3_ROADMAP.md`。
+
+**V3 使用说明**：新项目直接说学习目标；旧项目先跑 `migrate_v2_v3.py backup`，再 `migrate`、`verify`，备份可用于 `rollback`。回归命令：`python scripts/run_v3_tests.py` 与 `python scripts/run_benchmark.py`。
