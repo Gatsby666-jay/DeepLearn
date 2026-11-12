@@ -50,7 +50,13 @@ def main() -> int:
     required = ["SKILL.md", "core/orchestrator.md", "core/data-schema.md",
                 "references/quality-gates.md", "scripts/validate_map.py",
                 "scripts/validate_schema.py", "scripts/validate_roadmap.py",
-                "scripts/run_tests.py",
+                "scripts/run_tests.py", "scripts/v3_rules.py",
+                "scripts/validate_v3_schema.py", "scripts/migrate_v2_v3.py",
+                "scripts/decision_engine.py", "scripts/run_v3_tests.py",
+                "scripts/run_benchmark.py", "benchmarks/cases.json",
+                "tests/v3_cases.json", "docs/V3_BASELINE.md",
+                "docs/V3_ARCHITECTURE.md", "docs/V3_MIGRATION.md",
+                "docs/V3_TEST_REPORT.md", "docs/V3_ROADMAP.md",
                 "templates/knowledge-node.json", "templates/learner-progress.json"]
     for rel in required:
         checked += 1
