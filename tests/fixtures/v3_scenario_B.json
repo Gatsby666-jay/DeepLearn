@@ -1,0 +1,35 @@
+{
+  "project_id": "PROJECT-001",
+  "goal": "懂 C 基础但不会指针",
+  "nodes": [
+    {
+      "node_id": "NODE-001",
+      "mastery_level": 4,
+      "confidence": "supported",
+      "evidence_count": 2,
+      "importance": "essential",
+      "review_status": "not_scheduled",
+      "recent_errors": 0,
+      "prerequisite_gaps": []
+    },
+    {
+      "node_id": "NODE-002",
+      "mastery_level": 1,
+      "confidence": "supported",
+      "evidence_count": 2,
+      "importance": "essential",
+      "review_status": "not_scheduled",
+      "recent_errors": 0,
+      "prerequisite_gaps": [
+        {
+          "node_id": "NODE-003",
+          "necessity": "required"
+        }
+      ]
+    }
+  ],
+  "competency_progress": [],
+  "common_errors": [],
+  "preferences": {},
+  "time_constraint_hours": 5
+}
