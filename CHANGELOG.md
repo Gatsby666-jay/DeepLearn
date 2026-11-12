@@ -1,5 +1,31 @@
 # Changelog
 
+
+## v2.1 — 工程验收缺陷修复（2026-11-12）
+
+依据 2026-11-12 工程验收报告（CONDITIONAL PASS）G 节逐项修复，**未移动或删除任何文件**。
+
+| 缺陷 | 修复 |
+|---|---|
+| 六问验收门 / G1 可绕过（`atomic_gate`、`decomposition_quality`、`mechanism` 全可选） | `deeplearn_rules.py` 增加条件必填与 `gate_incomplete`；缺字段报 `gate_missing` / `quality_missing` / `missing_mechanism` |
+| `evidence.mastery_decision` 与 `mastery_level` 不一致不报 | `validate_state.py` 新增 `mastery_evidence_mismatch` |
+| `history` 清空、阶段与事件矛盾均通过 | 新增 `history_missing`、`stage_event_mismatch` |
+| `--strict` 误判合法多分支 | 仅孤立节点阻断；`disconnected_components` 保留警告 |
+| 字段缺失误报 `self_loop`、v2 不支持 `from`/`to` 别名 | 自环判断要求两端非 None；v2 边字段归一化 |
+| roadmap 校验器完全缺失 | 新增 `scripts/validate_roadmap.py`（阶段拓扑序、缺失前置、阶段引用、关键路径工期、非法时长、阶段环） |
+| 12 个场景用例只是字符串包含检查 | T 用例改名「契约检查」；新增 3 个 `pipeline` 用例串联多校验器验证真实数据流 |
+| SKILL.md 脚本职责表述笼统 | 改为逐脚本分工表，并把 `validate_roadmap.py` 加入校验命令 |
+
+### 测试
+
+`run_tests.py` → **47 用例：44 通过 / 0 失败 / 3 未自动化**（29 script + 12 contract + 3 pipeline + 3 not_automated）。新增 R1–R4（路线图）、G1–G6（缺陷回归）、E1–E3（多校验器串联场景）。
+
+独立探针复核：P1 由 `exit=0 errors=[]` 变为 `exit=1` 含 `gate_missing/quality_missing/missing_mechanism`；P3b/P7/P8 分别命中 `mastery_evidence_mismatch` / `history_missing` / `stage_event_mismatch`；P4 strict 由 1 变 0；P6 不再误报自环。
+
+### 仍未改变
+
+Orchestrator、state 读写/快照、replan、复习调度、资源验证器、Lesson 生成仍是**规则级设计**，本次未实现运行时执行层；真实 Agent 端到端回归仍未建立。
+
 ## v2.0 — 完整闭环架构升级（2026-11-09）
 
 ### 架构审计发现（修改前）
