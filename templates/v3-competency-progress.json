@@ -1,0 +1,12 @@
+{
+  "project_id": "PROJECT-001",
+  "competency_id": "COMP-001",
+  "proficiency_level": "C0",
+  "confidence": "unassessed",
+  "evidence": [],
+  "last_assessed": null,
+  "growth_history": [],
+  "next_action": "完成一次独立任务",
+  "schema_version": 3,
+  "created_at": "2026-11-12"
+}
