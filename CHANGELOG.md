@@ -1,6 +1,38 @@
 # Changelog
 
 
+## v3.0 — Adaptive Learning Intelligence System（2026-11-12）
+
+从 Knowledge-Centered Learning 升级为 **Learner-Centered Competency Development**。**V2 零删除、零移动、零 schema 改动**：64 个原文件、47 个测试、8 个脚本行为、12 阶段 Orchestrator 全部保留。
+
+### 六大引擎与新增目录
+
+`intelligence/`（学习者画像/自适应/决策）、`knowledge/`（图谱进化/关系/来源可信度）、`competency/`（能力模型/映射/评估/评分标准）、`practice/`（练习/实验/项目/实践评价）、`multimodal/`（输入适配/图片/代码/能力降级）、`evaluation/`（学习效果/教学质量/Benchmark）、`benchmarks/`（12 领域）、`docs/`（V3_BASELINE / V3_ARCHITECTURE / V3_MIGRATION / V3_TEST_REPORT / V3_ROADMAP）、`core/v3-schema.md`、`core/v3-integration.md`、`memory/learner-history.md`。
+
+### 统一数据模型
+
+新增 10 类 V3 结构（LearnerProfile / Competency / CompetencyProgress / LearningEvent / PracticeTask / PracticeEvidence / LearningPlan / KnowledgeGraphChange / Resource / AssessmentResult），全部带唯一 ID、`schema_version=3`、时间字段、来源/证据引用、明确枚举与空值规则；`scripts/v3_rules.py` 为可执行单一事实来源，`scripts/validate_v3_schema.py` 校验跨模块引用。V2 的 KnowledgeNode / LearnerProgress / 15 组枚举**原样保留**。
+
+### 工程实现（可执行、已测试）
+
+`v3_rules.py`、`validate_v3_schema.py`、`migrate_v2_v3.py`（backup/migrate/verify/rollback）、`decision_engine.py`（九项输出 + 六级优先级 + 理由）、`competency_engine.py`（七维评分 → C0–C5）、`practice_engine.py`（类型推荐 + 三级提示校验）、`knowledge_evolution.py`（提案证据门槛）、`run_benchmark.py`、`run_v3_tests.py`、`test_migration.py`。
+
+### 测试结果
+
+- V2 回归 `run_tests.py`：47 用例 44 通过 / 0 失败 / 3 未自动化（**未退化**）
+- V3 套件 `run_v3_tests.py`：47 用例 44 通过 / 0 失败 / 3 未自动化；含场景 A–H 决策优先级断言、10 模板校验、能力/练习/图谱引擎、迁移全流程、V2 回归
+- `run_benchmark.py`：12 领域 12 通过 / 0 失败
+- `quick_validate.py` 通过；`validate_references.py` 113 处引用有效；`check_consistency.py` 18 个脚本可编译；`package_skill.py` Skill is valid
+
+### 迁移与回滚
+
+`docs/V3_MIGRATION.md` 定义只增不改的字段映射；`migrate_v2_v3.py` 无备份拒绝迁移、迁移前校验 sha256、verify 逐字段比对 V2 原值、rollback 恢复原始字节。`test_migration.py` 端到端断言 7 项全部通过。
+
+### 已知限制
+
+Orchestrator / state 读写快照 / replan / 复习调度 / 资源验证器仍为规则级设计；图片识别、代码执行、仿真为宿主可选能力，本包只提供适配与降级；教学质量主观评价与真迁移题质量未自动化（N01–N03）。详见 `docs/V3_ROADMAP.md`。
+
+
 ## v2.1 — 工程验收缺陷修复（2026-11-12）
 
 依据 2026-11-12 工程验收报告（CONDITIONAL PASS）G 节逐项修复，**未移动或删除任何文件**。
