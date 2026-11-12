@@ -1,0 +1,20 @@
+{
+  "project_id": "PROJECT-001",
+  "goal": "长期学习后恢复",
+  "nodes": [
+    {
+      "node_id": "NODE-001",
+      "mastery_level": 4,
+      "confidence": "supported",
+      "evidence_count": 2,
+      "importance": "essential",
+      "review_status": "due",
+      "recent_errors": 0,
+      "prerequisite_gaps": []
+    }
+  ],
+  "competency_progress": [],
+  "common_errors": [],
+  "preferences": {},
+  "time_constraint_hours": 5
+}
