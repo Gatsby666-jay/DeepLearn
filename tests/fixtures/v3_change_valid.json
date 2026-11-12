@@ -1,0 +1,29 @@
+{
+  "change_id": "CHG-001",
+  "affected_node_ids": [
+    "NODE-001"
+  ],
+  "change_type": "add_prerequisite",
+  "old_value": null,
+  "new_value": "NODE-002",
+  "reason": "两次独立作答均暴露该前置缺失",
+  "evidence": [
+    {
+      "source": "assessment",
+      "detail": "第一次"
+    },
+    {
+      "source": "assessment",
+      "detail": "第二次"
+    }
+  ],
+  "confidence": "supported",
+  "impact_scope": [
+    "NODE-001"
+  ],
+  "requires_reassessment": true,
+  "status": "proposed",
+  "schema_version": 3,
+  "created_at": "2026-11-12",
+  "source": "assessment"
+}
