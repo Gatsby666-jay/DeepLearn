@@ -1,0 +1,22 @@
+{
+  "plan_id": "PLAN-001",
+  "project_id": "PROJECT-001",
+  "version": 1,
+  "created_at": "2026-11-12",
+  "goal": "掌握示例主题",
+  "decision": {
+    "current_problem": "推进关键知识",
+    "next_node_id": "NODE-001",
+    "needs_review": "no",
+    "needs_prerequisite_repair": "no",
+    "teaching_modality": "derivation",
+    "practice_type": "calculation",
+    "enter_project_practice": "no",
+    "allow_advance": "yes",
+    "reason": "依据六类信号与优先级规则"
+  },
+  "stages": [],
+  "next_action": "NODE-001",
+  "reason": "依据六类信号与优先级规则",
+  "schema_version": 3
+}
