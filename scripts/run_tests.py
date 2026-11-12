@@ -46,6 +46,18 @@ def run_script(root: Path, case: dict):
     return ok, detail
 
 
+def run_pipeline(root: Path, case: dict):
+    """Chain several validators over one scenario's data flow."""
+    details = []
+    for step in case.get("steps", []):
+        ok, detail = run_script(root, step)
+        details.append({"script": step.get("script"), "exit": detail.get("exit"), "ok": ok})
+        if not ok:
+            return False, {"failed_step": step.get("script"), "steps": details,
+                           "detail": detail}
+    return True, {"steps": details}
+
+
 def run_contract(root: Path, case: dict):
     path = root / case["file"]
     if not path.is_file():
@@ -78,6 +90,8 @@ def main() -> int:
             ok, detail = run_script(root, case)
         elif kind == "contract":
             ok, detail = run_contract(root, case)
+        elif kind == "pipeline":
+            ok, detail = run_pipeline(root, case)
         elif kind == "not_automated":
             ok, detail = True, {"status": "not_automated", "reason": case.get("note", "")}
             skipped += 1
