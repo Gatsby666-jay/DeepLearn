@@ -51,6 +51,16 @@
           "status": "failed",
           "note": "缺少动机"
         }
+      },
+      "decomposition_quality": {
+        "completeness": 2,
+        "independence": 2,
+        "dependency_correctness": 2,
+        "explanatory_depth": 2,
+        "verifiability": 2,
+        "boundary_clarity": 2,
+        "total": 12,
+        "critical_pass": true
       }
     },
     {
@@ -100,7 +110,43 @@
       "verification_methods": [
         "最小验证题"
       ],
-      "version": 1
+      "version": 1,
+      "atomic_gate": {
+        "why_exists": {
+          "status": "passed",
+          "note": "为目标而设"
+        },
+        "problem_solved": {
+          "status": "passed",
+          "note": "解决某类问题"
+        },
+        "depends_on": {
+          "status": "not_applicable",
+          "note": "示例根节点无前置"
+        },
+        "why_valid": {
+          "status": "passed",
+          "note": "由支撑原理保证"
+        },
+        "derivable": {
+          "status": "passed",
+          "note": "可逐步推出"
+        },
+        "verifiable": {
+          "status": "passed",
+          "note": "有最小验证题"
+        }
+      },
+      "decomposition_quality": {
+        "completeness": 2,
+        "independence": 2,
+        "dependency_correctness": 2,
+        "explanatory_depth": 2,
+        "verifiability": 2,
+        "boundary_clarity": 2,
+        "total": 12,
+        "critical_pass": true
+      }
     },
     {
       "id": "NODE-003",
@@ -147,7 +193,43 @@
       "verification_methods": [
         "最小验证题"
       ],
-      "version": 1
+      "version": 1,
+      "atomic_gate": {
+        "why_exists": {
+          "status": "passed",
+          "note": "为目标而设"
+        },
+        "problem_solved": {
+          "status": "passed",
+          "note": "解决某类问题"
+        },
+        "depends_on": {
+          "status": "not_applicable",
+          "note": "示例根节点无前置"
+        },
+        "why_valid": {
+          "status": "passed",
+          "note": "由支撑原理保证"
+        },
+        "derivable": {
+          "status": "passed",
+          "note": "可逐步推出"
+        },
+        "verifiable": {
+          "status": "passed",
+          "note": "有最小验证题"
+        }
+      },
+      "decomposition_quality": {
+        "completeness": 2,
+        "independence": 2,
+        "dependency_correctness": 2,
+        "explanatory_depth": 2,
+        "verifiability": 2,
+        "boundary_clarity": 2,
+        "total": 12,
+        "critical_pass": true
+      }
     }
   ],
   "edges": [
