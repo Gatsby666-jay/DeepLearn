@@ -132,13 +132,14 @@ A 入门 / B 高效（默认）/ C 深研 + 目标导向路径；排序前置优
 ```bash
 python scripts/validate_schema.py templates/knowledge-node.json --json
 python scripts/validate_map.py graph.json --strict --json
+python scripts/validate_roadmap.py roadmap.json --json
 python scripts/validate_references.py --json
 python scripts/validate_state.py state.json --json
 python scripts/check_consistency.py --json
 python scripts/run_tests.py --json
 ```
 
-脚本覆盖：必填字段、类型、枚举、ID 格式、交叉引用、重复 ID、缺失引用、自环、环、重复边、非法边类型、父子互逆、断连组件、证据结构、版本与历史、内部链接、跨模块枚举一致性。退出码 `0` 通过 / `1` 校验失败 / `2` 参数或解析错误；`--strict` 把警告也视为失败。**脚本不判定教学质量、解释正确性或迁移题质量**，这些由质量门禁自检清单约束。
+脚本分工：`validate_schema.py` 管字段、枚举、父子引用与门禁条件必填；`validate_map.py` 管图结构（重复 ID、缺失引用、自环、环、重复边、边类型、断连分量、孤立节点）；`validate_roadmap.py` 管阶段拓扑序、缺失前置、阶段引用、关键路径工期与非法时长；`validate_state.py` 管证据、掌握度、历史与阶段事件一致性；`validate_references.py` 管内部链接；`check_consistency.py` 管跨模块枚举与脚本可编译性。退出码 `0` 通过 / `1` 校验失败 / `2` 参数或解析错误；`--strict` 阻断孤立节点，但**合法多连通分量只作警告**。**脚本不判定教学质量、解释正确性或迁移题质量**，这些由质量门禁自检清单约束。
 
 ## 输出格式
 
