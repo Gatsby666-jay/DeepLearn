@@ -18,8 +18,8 @@
 
 ```
 quick_validate.py                 → 通过
-validate_references.py            → checked 113，内部引用全部有效
-check_consistency.py              → enums 15、scripts_compiled 18、markdown_headings 291，一致性通过
+validate_references.py            → checked 126，内部引用全部有效
+check_consistency.py              → enums 15、scripts_compiled 18、markdown_headings 302，一致性通过
 package_skill.py                  → Skill is valid!
 run_tests.py        (V2)          → 合计 47 | 通过 44 | 失败 0 | 未自动化 3
 run_v3_tests.py     (V3)          → 合计 47 | 通过 44 | 失败 0 | 未自动化 3
