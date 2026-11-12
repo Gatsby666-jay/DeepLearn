@@ -1,0 +1,68 @@
+{
+  "profile": {
+    "profile_id": "PROFILE-001",
+    "project_id": "PROJECT-001",
+    "schema_version": 3,
+    "created_at": "2026-11-12",
+    "updated_at": "2026-11-12",
+    "source": "template",
+    "prior_knowledge": [],
+    "learning_preferences": {
+      "code": {
+        "weight": 2,
+        "evidence_count": 0
+      }
+    },
+    "cognitive_load": {
+      "level": "unknown"
+    },
+    "misconception_profile": [],
+    "learning_behavior": {},
+    "learner_confidence": "unassessed",
+    "knowledge_states": [
+      {
+        "node_id": "NODE-001",
+        "state": "unexposed",
+        "evidence_count": 0,
+        "last_assessed": null
+      }
+    ],
+    "retention_summary": {
+      "status": "not_assessed"
+    },
+    "requires_assessment": true
+  },
+  "competencies": [
+    {
+      "competency_id": "COMP-001",
+      "name": "示例能力",
+      "description": "独立完成标准任务的能力",
+      "required_knowledge": [
+        "NODE-001"
+      ],
+      "observable_behaviors": [
+        "能独立完成并解释设计决策"
+      ],
+      "performance_criteria": [
+        "结果可复现",
+        "过程可解释"
+      ],
+      "assessment_methods": [
+        "independent_project",
+        "debugging"
+      ],
+      "proficiency_levels": [
+        "C0",
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5"
+      ],
+      "evidence_refs": [],
+      "schema_version": 3,
+      "created_at": "2026-11-12",
+      "source": "template"
+    }
+  ]
+}
