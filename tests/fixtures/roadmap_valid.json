@@ -1,0 +1,14 @@
+{
+  "project_id": "PROJECT-001",
+  "nodes": [
+    {"id": "NODE-001", "prerequisites": []},
+    {"id": "NODE-002", "prerequisites": ["NODE-001"]},
+    {"id": "NODE-003", "prerequisites": ["NODE-002"]}
+  ],
+  "stages": [
+    {"id": "S1", "nodes": ["NODE-001"], "depends_on": [], "duration": {"min_hours": 2, "max_hours": 4}},
+    {"id": "S2", "nodes": ["NODE-002"], "depends_on": ["S1"], "duration": {"min_hours": 3, "max_hours": 5}},
+    {"id": "S3", "nodes": ["NODE-003"], "depends_on": ["S2"], "duration": {"min_hours": 2, "max_hours": 3}}
+  ],
+  "critical_path": ["S1", "S2", "S3"]
+}
