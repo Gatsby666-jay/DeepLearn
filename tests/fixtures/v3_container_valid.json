@@ -1,0 +1,377 @@
+{
+  "project_id": "PROJECT-001",
+  "schema_version": 3,
+  "knowledge_nodes": [
+    {
+      "id": "NODE-001",
+      "name": "节点 NODE-001",
+      "description": "一句表述",
+      "node_type": "concept",
+      "learning_category": "technical_domain",
+      "decomposition_level": 3,
+      "difficulty": 3,
+      "importance": "essential",
+      "time_estimate": {
+        "min_hours": 1,
+        "max_hours": 2
+      },
+      "practical_value": "high",
+      "mechanism": "按因果顺序工作",
+      "principles": [
+        "支撑原理"
+      ],
+      "version": 1,
+      "atomic_gate": {
+        "why_exists": {
+          "status": "passed",
+          "note": "示例"
+        },
+        "problem_solved": {
+          "status": "passed",
+          "note": "示例"
+        },
+        "depends_on": {
+          "status": "passed",
+          "note": "示例"
+        },
+        "why_valid": {
+          "status": "passed",
+          "note": "示例"
+        },
+        "derivable": {
+          "status": "passed",
+          "note": "示例"
+        },
+        "verifiable": {
+          "status": "passed",
+          "note": "示例"
+        }
+      },
+      "decomposition_quality": {
+        "completeness": 2,
+        "independence": 2,
+        "dependency_correctness": 2,
+        "explanatory_depth": 2,
+        "verifiability": 2,
+        "boundary_clarity": 2,
+        "total": 12,
+        "critical_pass": true
+      }
+    },
+    {
+      "id": "NODE-002",
+      "name": "节点 NODE-002",
+      "description": "一句表述",
+      "node_type": "concept",
+      "learning_category": "technical_domain",
+      "decomposition_level": 3,
+      "difficulty": 3,
+      "importance": "essential",
+      "time_estimate": {
+        "min_hours": 1,
+        "max_hours": 2
+      },
+      "practical_value": "high",
+      "mechanism": "按因果顺序工作",
+      "principles": [
+        "支撑原理"
+      ],
+      "version": 1,
+      "atomic_gate": {
+        "why_exists": {
+          "status": "passed",
+          "note": "示例"
+        },
+        "problem_solved": {
+          "status": "passed",
+          "note": "示例"
+        },
+        "depends_on": {
+          "status": "passed",
+          "note": "示例"
+        },
+        "why_valid": {
+          "status": "passed",
+          "note": "示例"
+        },
+        "derivable": {
+          "status": "passed",
+          "note": "示例"
+        },
+        "verifiable": {
+          "status": "passed",
+          "note": "示例"
+        }
+      },
+      "decomposition_quality": {
+        "completeness": 2,
+        "independence": 2,
+        "dependency_correctness": 2,
+        "explanatory_depth": 2,
+        "verifiability": 2,
+        "boundary_clarity": 2,
+        "total": 12,
+        "critical_pass": true
+      }
+    }
+  ],
+  "profile": {
+    "profile_id": "PROFILE-001",
+    "project_id": "PROJECT-001",
+    "schema_version": 3,
+    "created_at": "2026-11-12",
+    "updated_at": "2026-11-12",
+    "source": "template",
+    "prior_knowledge": [],
+    "learning_preferences": {
+      "code": {
+        "weight": 2,
+        "evidence_count": 0
+      }
+    },
+    "cognitive_load": {
+      "level": "unknown"
+    },
+    "misconception_profile": [],
+    "learning_behavior": {},
+    "learner_confidence": "unassessed",
+    "knowledge_states": [
+      {
+        "node_id": "NODE-001",
+        "state": "unexposed",
+        "evidence_count": 0,
+        "last_assessed": null
+      }
+    ],
+    "retention_summary": {
+      "status": "not_assessed"
+    },
+    "requires_assessment": true
+  },
+  "competencies": [
+    {
+      "competency_id": "COMP-001",
+      "name": "示例能力",
+      "description": "独立完成标准任务的能力",
+      "required_knowledge": [
+        "NODE-001"
+      ],
+      "observable_behaviors": [
+        "能独立完成并解释设计决策"
+      ],
+      "performance_criteria": [
+        "结果可复现",
+        "过程可解释"
+      ],
+      "assessment_methods": [
+        "independent_project",
+        "debugging"
+      ],
+      "proficiency_levels": [
+        "C0",
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5"
+      ],
+      "evidence_refs": [],
+      "schema_version": 3,
+      "created_at": "2026-11-12",
+      "source": "template"
+    }
+  ],
+  "competency_progress": [
+    {
+      "project_id": "PROJECT-001",
+      "competency_id": "COMP-001",
+      "proficiency_level": "C0",
+      "confidence": "unassessed",
+      "evidence": [],
+      "last_assessed": null,
+      "growth_history": [],
+      "next_action": "完成一次独立任务",
+      "schema_version": 3,
+      "created_at": "2026-11-12"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "EVENT-001",
+      "project_id": "PROJECT-001",
+      "event_type": "assessment_completed",
+      "occurred_at": "2026-11-12",
+      "node_ids": [
+        "NODE-001"
+      ],
+      "competency_ids": [
+        "COMP-001"
+      ],
+      "payload": {
+        "detail": "示例事件"
+      },
+      "evidence_refs": [],
+      "source": "template",
+      "schema_version": 3
+    }
+  ],
+  "practice_tasks": [
+    {
+      "exercise_id": "TASK-001",
+      "target_node_ids": [
+        "NODE-001"
+      ],
+      "target_competencies": [
+        "COMP-001"
+      ],
+      "practice_type": "concept",
+      "difficulty": 2,
+      "prerequisites": [],
+      "task": "用自己的话解释该机制并给出一个反例",
+      "expected_output": "一段可判定的解释 + 一个反例",
+      "hints": [
+        "方向提示：判断该用哪类原理",
+        "关键机制提示：点明核心关系",
+        "局部步骤提示：给出第一步"
+      ],
+      "evaluation_criteria": [
+        "机制表述完整",
+        "反例成立"
+      ],
+      "common_misconceptions": [],
+      "solution_visibility": "after_attempt",
+      "schema_version": 3,
+      "created_at": "2026-11-12",
+      "source": "template"
+    }
+  ],
+  "practice_evidence": [
+    {
+      "evidence_id": "PEV-001",
+      "project_id": "PROJECT-001",
+      "exercise_id": "TASK-001",
+      "node_ids": [
+        "NODE-001"
+      ],
+      "competency_ids": [
+        "COMP-001"
+      ],
+      "scores": {
+        "result_correctness": 2,
+        "reasoning": 2,
+        "method": 2,
+        "independence": 2,
+        "anomaly_handling": 2,
+        "constraint_satisfaction": 2,
+        "explainability": 2
+      },
+      "hint_level_used": 0,
+      "execution_status": "executed",
+      "independence": 2,
+      "anomaly_handling": 2,
+      "result": "pass",
+      "reasoning": "过程可复核",
+      "evidence_source": "objective_assessment",
+      "evidence_types": [
+        "anomaly_resolution"
+      ],
+      "occurred_at": "2026-11-12",
+      "schema_version": 3,
+      "source": "objective_assessment"
+    }
+  ],
+  "learning_plan": {
+    "plan_id": "PLAN-001",
+    "project_id": "PROJECT-001",
+    "version": 1,
+    "created_at": "2026-11-12",
+    "goal": "掌握示例主题",
+    "decision": {
+      "current_problem": "推进关键知识",
+      "next_node_id": "NODE-001",
+      "needs_review": "no",
+      "needs_prerequisite_repair": "no",
+      "teaching_modality": "derivation",
+      "practice_type": "calculation",
+      "enter_project_practice": "no",
+      "allow_advance": "yes",
+      "reason": "依据六类信号与优先级规则"
+    },
+    "stages": [],
+    "next_action": "NODE-001",
+    "reason": "依据六类信号与优先级规则",
+    "schema_version": 3
+  },
+  "graph_changes": [
+    {
+      "change_id": "CHG-001",
+      "affected_node_ids": [
+        "NODE-001"
+      ],
+      "change_type": "add_prerequisite",
+      "old_value": null,
+      "new_value": "NODE-002",
+      "reason": "两次独立作答均暴露该前置缺失",
+      "evidence": [
+        {
+          "source": "assessment",
+          "detail": "第一次"
+        },
+        {
+          "source": "assessment",
+          "detail": "第二次"
+        }
+      ],
+      "confidence": "supported",
+      "impact_scope": [
+        "NODE-001"
+      ],
+      "requires_reassessment": true,
+      "status": "proposed",
+      "schema_version": 3,
+      "created_at": "2026-11-12",
+      "source": "assessment"
+    }
+  ],
+  "resources": [
+    {
+      "resource_id": "RES-001",
+      "title": "示例官方文档",
+      "source": "official",
+      "url": null,
+      "resource_type": "official_documentation",
+      "difficulty": 2,
+      "language": "zh",
+      "relevant_node_ids": [
+        "NODE-001"
+      ],
+      "prerequisites": [],
+      "intended_use": "查阅规范",
+      "last_verified": null,
+      "verification_status": "unverified",
+      "schema_version": 3,
+      "created_at": "2026-11-12"
+    }
+  ],
+  "assessment_results": [
+    {
+      "assessment_id": "ARES-001",
+      "project_id": "PROJECT-001",
+      "subject_type": "competency",
+      "subject_id": "COMP-001",
+      "level": "C3",
+      "confidence": "provisional",
+      "evidence_ids": [
+        "PEV-001"
+      ],
+      "reason": "独立完成标准任务且过程可复核",
+      "reviewer": "deterministic_check",
+      "scores": {
+        "result_correctness": 2
+      },
+      "schema_version": 3,
+      "created_at": "2026-11-12",
+      "source": "competency_engine"
+    }
+  ]
+}
