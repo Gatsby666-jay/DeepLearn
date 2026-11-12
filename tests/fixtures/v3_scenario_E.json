@@ -1,0 +1,26 @@
+{
+  "project_id": "PROJECT-001",
+  "goal": "纠正错误认知",
+  "nodes": [
+    {
+      "node_id": "NODE-001",
+      "mastery_level": 3,
+      "confidence": "supported",
+      "evidence_count": 2,
+      "importance": "essential",
+      "review_status": "not_scheduled",
+      "recent_errors": 0,
+      "prerequisite_gaps": []
+    }
+  ],
+  "competency_progress": [],
+  "common_errors": [
+    {
+      "error": "指针是变量别名",
+      "count": 2,
+      "node_id": "NODE-001"
+    }
+  ],
+  "preferences": {},
+  "time_constraint_hours": 5
+}
