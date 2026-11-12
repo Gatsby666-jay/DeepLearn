@@ -49,7 +49,8 @@ def main() -> int:
 
     required = ["SKILL.md", "core/orchestrator.md", "core/data-schema.md",
                 "references/quality-gates.md", "scripts/validate_map.py",
-                "scripts/validate_schema.py", "scripts/run_tests.py",
+                "scripts/validate_schema.py", "scripts/validate_roadmap.py",
+                "scripts/run_tests.py",
                 "templates/knowledge-node.json", "templates/learner-progress.json"]
     for rel in required:
         checked += 1
