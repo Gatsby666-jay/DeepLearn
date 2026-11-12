@@ -1,0 +1,31 @@
+{
+  "competency_id": "COMP-001",
+  "name": "示例能力",
+  "description": "独立完成标准任务的能力",
+  "required_knowledge": [
+    "NODE-001"
+  ],
+  "observable_behaviors": [
+    "能独立完成并解释设计决策"
+  ],
+  "performance_criteria": [
+    "结果可复现",
+    "过程可解释"
+  ],
+  "assessment_methods": [
+    "independent_project",
+    "debugging"
+  ],
+  "proficiency_levels": [
+    "C0",
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5"
+  ],
+  "evidence_refs": [],
+  "schema_version": 3,
+  "created_at": "2026-11-12",
+  "source": "template"
+}
