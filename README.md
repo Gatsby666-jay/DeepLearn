@@ -211,10 +211,10 @@ deeplearn/
 │   ├── deeplearn_rules.py       # 枚举与必填字段的可执行单一事实来源
 │   ├── validate_map.py          # 图校验（兼容 V1 Mermaid / 简单 JSON 输入）
 │   ├── validate_schema.py  ├── validate_references.py  ├── validate_state.py
-│   ├── check_consistency.py  └── run_tests.py
+│   ├── validate_roadmap.py  ├── check_consistency.py  └── run_tests.py
 ├── tests/
-│   ├── cases.json               # 34 用例：19 确定性 + 12 契约 + 3 未自动化
-│   └── fixtures/                # 14 个静态 JSON 样本（正常与各类失败）
+│   ├── cases.json               # 47 用例：29 脚本 + 12 契约 + 3 串联 + 3 未自动化
+│   └── fixtures/                # 24 个静态 JSON 样本（正常、失败与回归）
 └── examples/
     ├── academic-subject.md  ├── individual-concept.md
     ├── technical-domain.md  └── practical-project.md
@@ -246,7 +246,9 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 
 | 项目 | 结果 |
 |---|---|
-| `scripts/run_tests.py` v2.0 全套 | **34 用例：31 通过、0 失败、3 项主观能力标注为未自动化** |
+| `scripts/run_tests.py` v2.1 全套 | **47 用例：44 通过、0 失败、3 项主观能力标注为未自动化**（29 脚本断言 + 12 契约检查 + 3 串联场景） |
+| `validate_roadmap.py` | 阶段拓扑序 / 缺失前置 / 阶段引用 / 关键路径工期 / 非法时长，4 个用例全部通过 |
+| 验收缺陷回归 G1–G6 | 六问门禁、证据决策、历史保护、阶段事件、strict 多分支、别名边，全部按预期被拒或通过 |
 | `validate_map.py` 增强图校验 | 重复 ID / 缺失引用 / 自环 / 环 / 重复边 / 非法枚举 / 断连分量 / 六问门禁，均有失败样本并通过断言 |
 | `validate_schema.py`、`validate_state.py` | 模板通过；非法字段、非法掌握度、冲突证据均被拒绝 |
 | `validate_references.py`、`check_consistency.py` | 92 处内部引用有效；枚举文档与代码一致；7 个脚本可编译 |
@@ -282,7 +284,7 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 
 边界用例：「学点东西」→ 1 个澄清 + 降级概览；「为做智能车学嵌入式」→ F 主 C 辅、只出一套三图；「三天精通量子场论」→ 最小可达子集 + 未覆盖范围。V2 复核额外检查：原子节点过六问、L3 以下有机制或原理、依赖图零孤立且有跨分支边、重要节点有原理追溯链、一课一个新机制、诊断后重排路线图。
 
-**诚实说明**：v2.0 的 12 个生命周期用例是「文档契约检查 + 确定性脚本断言」，不是真实 Agent 端到端回归；3 项主观能力（教学质量、误解根因准确度、真迁移判定）在测试报告中明确标为 `SKIP_NOT_AUTOMATED`，没有伪装成通过。上述 13 项 dry-run 是**依据 SKILL.md 规则的人工推演**，用于检查规则覆盖与一致性，并非在真实 Agent 运行时自动执行的回归测试。门禁是规则级检查，依赖执行 Agent 自觉运行自检清单，无法在宿主层强制拦截。尚未验证：不同宿主平台对 Mermaid 的渲染、真实会话中的 state 持久化、联网时的资源链接有效性。
+**诚实说明**：v2.1 已把 12 个「用例」明确改名为「契约检查」——它们的断言只是检查文档是否包含关键词，不能证明场景跑通；另新增 3 个 pipeline 用例串联多个真实校验器验证数据流。v2.0 的 12 个生命周期用例是「文档契约检查 + 确定性脚本断言」，不是真实 Agent 端到端回归；3 项主观能力（教学质量、误解根因准确度、真迁移判定）在测试报告中明确标为 `SKIP_NOT_AUTOMATED`，没有伪装成通过。上述 13 项 dry-run 是**依据 SKILL.md 规则的人工推演**，用于检查规则覆盖与一致性，并非在真实 Agent 运行时自动执行的回归测试。门禁是规则级检查，依赖执行 Agent 自觉运行自检清单，无法在宿主层强制拦截。尚未验证：不同宿主平台对 Mermaid 的渲染、真实会话中的 state 持久化、联网时的资源链接有效性。
 
 ## 已知限制
 
@@ -291,6 +293,7 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 - 掌握度依据用户作答文本判定，不能自动验证代码正确性。
 - 五道门禁靠 Agent 自检执行，不是宿主强制的运行时校验；脚本只校验提交给它的结构化数据，不能保证 Agent 每次都生成合规 JSON。
 - 自适应教学质量、类比恰当性、迁移题是否为真迁移，无法由 Python 判定（N1–N3 未自动化）。
+- Orchestrator、state 读写/快照、replan、复习调度、资源验证器仍是规则级设计，无运行时执行代码。
 - 时长是估算区间（默认按每周 3–5 小时），不是精确承诺。
 - 大目标的准确性依赖 Agent 自身的领域知识；规则能防止「跳前置」和「假装掌握」，不能替代事实核查。
 
