@@ -1,42 +1,575 @@
 {
   "suite": "DeepLearn V2 lifecycle and determinism suite",
-  "version": 1,
+  "version": 2,
   "cases": [
-    {"id": "S1", "title": "模板 KnowledgeNode 通过 schema 校验", "kind": "script", "script": "validate_schema.py", "args": ["--json"], "fixture": "templates/knowledge-node.json", "expect_exit": 0},
-    {"id": "S2", "title": "模板 LearnerProgress 通过 schema 校验", "kind": "script", "script": "validate_schema.py", "args": ["--json"], "fixture": "templates/learner-progress.json", "expect_exit": 0},
-    {"id": "S3", "title": "非法节点被 schema 拒绝", "kind": "script", "script": "validate_schema.py", "args": ["--json"], "fixture": "tests/fixtures/node_invalid.json", "expect_exit": 1, "expect_error_code": "invalid_enum"},
-    {"id": "S4", "title": "合法 V2 图通过严格校验", "kind": "script", "script": "validate_map.py", "args": ["--strict", "--json"], "fixture": "tests/fixtures/graph_valid.json", "expect_exit": 0},
-    {"id": "S5", "title": "循环依赖阻断路线图", "kind": "script", "script": "validate_map.py", "args": ["--json"], "fixture": "tests/fixtures/graph_cycle.json", "expect_exit": 1, "expect_error_code": "dependency_cycle"},
-    {"id": "S6", "title": "孤立节点在 strict 下失败", "kind": "script", "script": "validate_map.py", "args": ["--strict", "--json"], "fixture": "tests/fixtures/graph_disconnected.json", "expect_exit": 1, "expect_error_code": "isolated_nodes"},
-    {"id": "S7", "title": "孤立节点在非 strict 下仅警告", "kind": "script", "script": "validate_map.py", "args": ["--json"], "fixture": "tests/fixtures/graph_disconnected.json", "expect_exit": 0},
-    {"id": "S8", "title": "重复节点 ID 被检出", "kind": "script", "script": "validate_map.py", "args": ["--json"], "fixture": "tests/fixtures/graph_duplicate_ids.json", "expect_exit": 1, "expect_error_code": "duplicate_node_ids"},
-    {"id": "S9", "title": "缺失引用被检出", "kind": "script", "script": "validate_map.py", "args": ["--json"], "fixture": "tests/fixtures/graph_missing_ref.json", "expect_exit": 1, "expect_error_code": "missing_reference"},
-    {"id": "S10", "title": "非法枚举被检出", "kind": "script", "script": "validate_map.py", "args": ["--json"], "fixture": "tests/fixtures/graph_bad_enum.json", "expect_exit": 1, "expect_error_code": "invalid_enum"},
-    {"id": "S11", "title": "自环被检出", "kind": "script", "script": "validate_map.py", "args": ["--json"], "fixture": "tests/fixtures/graph_self_loop.json", "expect_exit": 1, "expect_error_code": "self_loop"},
-    {"id": "S12", "title": "六问验收失败阻断路线图", "kind": "script", "script": "validate_map.py", "args": ["--json"], "fixture": "tests/fixtures/graph_gate_failed.json", "expect_exit": 1, "expect_error_code": "gate_failed"},
-    {"id": "S13", "title": "Mermaid 正常图（V1 兼容）", "kind": "script", "script": "validate_map.py", "args": ["--strict", "--json"], "stdin": "flowchart LR\n  A[前置] --> B[后继]\n  B --> C[终点]\n", "expect_exit": 0},
-    {"id": "S14", "title": "Mermaid 成环（V1 兼容）", "kind": "script", "script": "validate_map.py", "args": ["--json"], "stdin": "flowchart LR\n  A --> B\n  B --> C\n  C --> A\n", "expect_exit": 1, "expect_error_code": "dependency_cycle"},
-    {"id": "S15", "title": "合法 state 通过校验", "kind": "script", "script": "validate_state.py", "args": ["--json"], "fixture": "tests/fixtures/state_valid.json", "expect_exit": 0},
-    {"id": "S16", "title": "非法掌握度被拒绝", "kind": "script", "script": "validate_state.py", "args": ["--json"], "fixture": "tests/fixtures/state_bad_mastery.json", "expect_exit": 1, "expect_error_code": "invalid_mastery"},
-    {"id": "S17", "title": "冲突证据不得判深度掌握", "kind": "script", "script": "validate_state.py", "args": ["--json"], "fixture": "tests/fixtures/state_conflict.json", "expect_exit": 1, "expect_error_code": "conflicting_evidence"},
-    {"id": "S18", "title": "内部引用完整", "kind": "script", "script": "validate_references.py", "args": ["--json"], "expect_exit": 0},
-    {"id": "S19", "title": "跨模块一致性", "kind": "script", "script": "check_consistency.py", "args": ["--json"], "expect_exit": 0},
-
-    {"id": "T1", "title": "用例1 学科：工作流 A / 分类 / 三条路径", "kind": "contract", "file": "core/orchestrator.md", "contains": ["工作流 A", "INTAKE", "VALIDATE"]},
-    {"id": "T2", "title": "用例2 概念：工作流 B / Atomic Lesson / 推理链", "kind": "contract", "file": "core/orchestrator.md", "contains": ["工作流 B", "DIAGNOSE"]},
-    {"id": "T3", "title": "用例3 技术域：技术域分类与跨分支示例", "kind": "contract", "file": "examples/technical-domain.md", "contains": ["technical_domain", "跨分支"]},
-    {"id": "T4", "title": "用例4 软件工具：分类与自适应拆解链", "kind": "contract", "file": "references/classification.md", "contains": ["software_tool"]},
-    {"id": "T5", "title": "用例5 项目：工作流 D 与目标导向路径", "kind": "contract", "file": "core/orchestrator.md", "contains": ["工作流 D"]},
-    {"id": "T6", "title": "用例6 具体问题：工作流 C 不做三张完整图", "kind": "contract", "file": "core/orchestrator.md", "contains": ["工作流 C", "不生成三张完整知识图"]},
-    {"id": "T7", "title": "用例7 误解诊断：十类错误与证据门槛", "kind": "contract", "file": "learning/misconception.md", "contains": ["心智模型错误", "证据门槛", "偶然猜对"]},
-    {"id": "T8", "title": "用例8 状态恢复与版本快照", "kind": "contract", "file": "memory/version-control.md", "contains": ["快照", "不丢失已证明的掌握度"]},
-    {"id": "T9", "title": "用例9 图失败：环检测阻断（见 S5）", "kind": "contract", "file": "core/orchestrator.md", "contains": ["验证失败阻塞", "停在 `VALIDATE`"]},
-    {"id": "T10", "title": "用例10 掌握度冲突：两条证据并存（见 S17）", "kind": "contract", "file": "references/assessment.md", "contains": ["冲突证据"]},
-    {"id": "T11", "title": "用例11 目标时间冲突：最小可达子集", "kind": "contract", "file": "references/learning-paths.md", "contains": ["最小可达子集"]},
-    {"id": "T12", "title": "用例12 Integration Lesson", "kind": "contract", "file": "references/teaching.md", "contains": ["Integration Lesson"]},
-
-    {"id": "N1", "title": "自适应教学质量（解释是否恰当）", "kind": "not_automated", "note": "主观教学质量无法由 Python 判定，仅由 quality-gates.md 自检清单约束"},
-    {"id": "N2", "title": "误解根因判断是否准确", "kind": "not_automated", "note": "需真实学习者作答才能验证"},
-    {"id": "N3", "title": "迁移任务是否为真迁移而非换皮原题", "kind": "not_automated", "note": "依赖领域判断，脚本只能检查字段完整性"}
+    {
+      "id": "S1",
+      "title": "模板 KnowledgeNode 通过 schema 校验",
+      "kind": "script",
+      "script": "validate_schema.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "templates/knowledge-node.json",
+      "expect_exit": 0
+    },
+    {
+      "id": "S2",
+      "title": "模板 LearnerProgress 通过 schema 校验",
+      "kind": "script",
+      "script": "validate_schema.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "templates/learner-progress.json",
+      "expect_exit": 0
+    },
+    {
+      "id": "S3",
+      "title": "非法节点被 schema 拒绝",
+      "kind": "script",
+      "script": "validate_schema.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/node_invalid.json",
+      "expect_exit": 1,
+      "expect_error_code": "invalid_enum"
+    },
+    {
+      "id": "S4",
+      "title": "合法 V2 图通过严格校验",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--strict",
+        "--json"
+      ],
+      "fixture": "tests/fixtures/graph_valid.json",
+      "expect_exit": 0
+    },
+    {
+      "id": "S5",
+      "title": "循环依赖阻断路线图",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/graph_cycle.json",
+      "expect_exit": 1,
+      "expect_error_code": "dependency_cycle"
+    },
+    {
+      "id": "S6",
+      "title": "孤立节点在 strict 下失败",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--strict",
+        "--json"
+      ],
+      "fixture": "tests/fixtures/graph_disconnected.json",
+      "expect_exit": 1,
+      "expect_error_code": "isolated_nodes"
+    },
+    {
+      "id": "S7",
+      "title": "孤立节点在非 strict 下仅警告",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/graph_disconnected.json",
+      "expect_exit": 0
+    },
+    {
+      "id": "S8",
+      "title": "重复节点 ID 被检出",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/graph_duplicate_ids.json",
+      "expect_exit": 1,
+      "expect_error_code": "duplicate_node_ids"
+    },
+    {
+      "id": "S9",
+      "title": "缺失引用被检出",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/graph_missing_ref.json",
+      "expect_exit": 1,
+      "expect_error_code": "missing_reference"
+    },
+    {
+      "id": "S10",
+      "title": "非法枚举被检出",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/graph_bad_enum.json",
+      "expect_exit": 1,
+      "expect_error_code": "invalid_enum"
+    },
+    {
+      "id": "S11",
+      "title": "自环被检出",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/graph_self_loop.json",
+      "expect_exit": 1,
+      "expect_error_code": "self_loop"
+    },
+    {
+      "id": "S12",
+      "title": "六问验收失败阻断路线图",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/graph_gate_failed.json",
+      "expect_exit": 1,
+      "expect_error_code": "gate_failed"
+    },
+    {
+      "id": "S13",
+      "title": "Mermaid 正常图（V1 兼容）",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--strict",
+        "--json"
+      ],
+      "stdin": "flowchart LR\n  A[前置] --> B[后继]\n  B --> C[终点]\n",
+      "expect_exit": 0
+    },
+    {
+      "id": "S14",
+      "title": "Mermaid 成环（V1 兼容）",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--json"
+      ],
+      "stdin": "flowchart LR\n  A --> B\n  B --> C\n  C --> A\n",
+      "expect_exit": 1,
+      "expect_error_code": "dependency_cycle"
+    },
+    {
+      "id": "S15",
+      "title": "合法 state 通过校验",
+      "kind": "script",
+      "script": "validate_state.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/state_valid.json",
+      "expect_exit": 0
+    },
+    {
+      "id": "S16",
+      "title": "非法掌握度被拒绝",
+      "kind": "script",
+      "script": "validate_state.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/state_bad_mastery.json",
+      "expect_exit": 1,
+      "expect_error_code": "invalid_mastery"
+    },
+    {
+      "id": "S17",
+      "title": "冲突证据不得判深度掌握",
+      "kind": "script",
+      "script": "validate_state.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/state_conflict.json",
+      "expect_exit": 1,
+      "expect_error_code": "conflicting_evidence"
+    },
+    {
+      "id": "S18",
+      "title": "内部引用完整",
+      "kind": "script",
+      "script": "validate_references.py",
+      "args": [
+        "--json"
+      ],
+      "expect_exit": 0
+    },
+    {
+      "id": "S19",
+      "title": "跨模块一致性",
+      "kind": "script",
+      "script": "check_consistency.py",
+      "args": [
+        "--json"
+      ],
+      "expect_exit": 0
+    },
+    {
+      "id": "T1",
+      "title": "契约检查 · 用例1 学科：工作流 A / 分类 / 三条路径",
+      "kind": "contract",
+      "file": "core/orchestrator.md",
+      "contains": [
+        "工作流 A",
+        "INTAKE",
+        "VALIDATE"
+      ]
+    },
+    {
+      "id": "T2",
+      "title": "契约检查 · 用例2 概念：工作流 B / Atomic Lesson / 推理链",
+      "kind": "contract",
+      "file": "core/orchestrator.md",
+      "contains": [
+        "工作流 B",
+        "DIAGNOSE"
+      ]
+    },
+    {
+      "id": "T3",
+      "title": "契约检查 · 用例3 技术域：技术域分类与跨分支示例",
+      "kind": "contract",
+      "file": "examples/technical-domain.md",
+      "contains": [
+        "technical_domain",
+        "跨分支"
+      ]
+    },
+    {
+      "id": "T4",
+      "title": "契约检查 · 用例4 软件工具：分类与自适应拆解链",
+      "kind": "contract",
+      "file": "references/classification.md",
+      "contains": [
+        "software_tool"
+      ]
+    },
+    {
+      "id": "T5",
+      "title": "契约检查 · 用例5 项目：工作流 D 与目标导向路径",
+      "kind": "contract",
+      "file": "core/orchestrator.md",
+      "contains": [
+        "工作流 D"
+      ]
+    },
+    {
+      "id": "T6",
+      "title": "契约检查 · 用例6 具体问题：工作流 C 不做三张完整图",
+      "kind": "contract",
+      "file": "core/orchestrator.md",
+      "contains": [
+        "工作流 C",
+        "不生成三张完整知识图"
+      ]
+    },
+    {
+      "id": "T7",
+      "title": "契约检查 · 用例7 误解诊断：十类错误与证据门槛",
+      "kind": "contract",
+      "file": "learning/misconception.md",
+      "contains": [
+        "心智模型错误",
+        "证据门槛",
+        "偶然猜对"
+      ]
+    },
+    {
+      "id": "T8",
+      "title": "契约检查 · 用例8 状态恢复与版本快照",
+      "kind": "contract",
+      "file": "memory/version-control.md",
+      "contains": [
+        "快照",
+        "不丢失已证明的掌握度"
+      ]
+    },
+    {
+      "id": "T9",
+      "title": "契约检查 · 用例9 图失败：环检测阻断（见 S5）",
+      "kind": "contract",
+      "file": "core/orchestrator.md",
+      "contains": [
+        "验证失败阻塞",
+        "停在 `VALIDATE`"
+      ]
+    },
+    {
+      "id": "T10",
+      "title": "契约检查 · 用例10 掌握度冲突：两条证据并存（见 S17）",
+      "kind": "contract",
+      "file": "references/assessment.md",
+      "contains": [
+        "冲突证据"
+      ]
+    },
+    {
+      "id": "T11",
+      "title": "契约检查 · 用例11 目标时间冲突：最小可达子集",
+      "kind": "contract",
+      "file": "references/learning-paths.md",
+      "contains": [
+        "最小可达子集"
+      ]
+    },
+    {
+      "id": "T12",
+      "title": "契约检查 · 用例12 Integration Lesson",
+      "kind": "contract",
+      "file": "references/teaching.md",
+      "contains": [
+        "Integration Lesson"
+      ]
+    },
+    {
+      "id": "N1",
+      "title": "自适应教学质量（解释是否恰当）",
+      "kind": "not_automated",
+      "note": "主观教学质量无法由 Python 判定，仅由 quality-gates.md 自检清单约束"
+    },
+    {
+      "id": "N2",
+      "title": "误解根因判断是否准确",
+      "kind": "not_automated",
+      "note": "需真实学习者作答才能验证"
+    },
+    {
+      "id": "N3",
+      "title": "迁移任务是否为真迁移而非换皮原题",
+      "kind": "not_automated",
+      "note": "依赖领域判断，脚本只能检查字段完整性"
+    },
+    {
+      "id": "R1",
+      "title": "路线图合法：阶段顺序/工期/关键路径",
+      "kind": "script",
+      "script": "validate_roadmap.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/roadmap_valid.json",
+      "expect_exit": 0
+    },
+    {
+      "id": "R2",
+      "title": "路线图前置顺序错误被拒",
+      "kind": "script",
+      "script": "validate_roadmap.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/roadmap_bad_order.json",
+      "expect_exit": 1,
+      "expect_error_code": "invalid_prerequisite_order"
+    },
+    {
+      "id": "R3",
+      "title": "路线图非法工期被拒",
+      "kind": "script",
+      "script": "validate_roadmap.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/roadmap_bad_duration.json",
+      "expect_exit": 1,
+      "expect_error_code": "invalid_duration"
+    },
+    {
+      "id": "R4",
+      "title": "路线图缺失前置被拒",
+      "kind": "script",
+      "script": "validate_roadmap.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/roadmap_missing_prereq.json",
+      "expect_exit": 1,
+      "expect_error_code": "missing_prerequisite"
+    },
+    {
+      "id": "G1",
+      "title": "回归：缺六问/质量分/机制的节点被拒",
+      "kind": "script",
+      "script": "validate_schema.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/gate_bypass.json",
+      "expect_exit": 1,
+      "expect_error_code": "gate_missing"
+    },
+    {
+      "id": "G2",
+      "title": "回归：证据决策与掌握度矛盾被拒",
+      "kind": "script",
+      "script": "validate_state.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/evidence_decision_mismatch.json",
+      "expect_exit": 1,
+      "expect_error_code": "mastery_evidence_mismatch"
+    },
+    {
+      "id": "G3",
+      "title": "回归：历史快照被清空被拒",
+      "kind": "script",
+      "script": "validate_state.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/history_wiped.json",
+      "expect_exit": 1,
+      "expect_error_code": "history_missing"
+    },
+    {
+      "id": "G4",
+      "title": "回归：阶段与事件序列矛盾被拒",
+      "kind": "script",
+      "script": "validate_state.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/stage_event_mismatch.json",
+      "expect_exit": 1,
+      "expect_error_code": "stage_event_mismatch"
+    },
+    {
+      "id": "G5",
+      "title": "回归：合法多分支通过 strict",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--strict",
+        "--json"
+      ],
+      "fixture": "tests/fixtures/graph_two_branches.json",
+      "expect_exit": 0
+    },
+    {
+      "id": "G6",
+      "title": "回归：from/to 别名不再误报自环",
+      "kind": "script",
+      "script": "validate_map.py",
+      "args": [
+        "--strict",
+        "--json"
+      ],
+      "fixture": "tests/fixtures/graph_alias_edge.json",
+      "expect_exit": 0
+    },
+    {
+      "id": "E1",
+      "title": "场景：学科全流程数据流（图→校验→路线→状态）",
+      "kind": "pipeline",
+      "steps": [
+        {
+          "script": "validate_schema.py",
+          "args": [
+            "--json"
+          ],
+          "fixture": "tests/fixtures/graph_valid.json",
+          "expect_exit": 0
+        },
+        {
+          "script": "validate_map.py",
+          "args": [
+            "--strict",
+            "--json"
+          ],
+          "fixture": "tests/fixtures/graph_valid.json",
+          "expect_exit": 0
+        },
+        {
+          "script": "validate_roadmap.py",
+          "args": [
+            "--json"
+          ],
+          "fixture": "tests/fixtures/roadmap_valid.json",
+          "expect_exit": 0
+        },
+        {
+          "script": "validate_state.py",
+          "args": [
+            "--json"
+          ],
+          "fixture": "tests/fixtures/state_valid.json",
+          "expect_exit": 0
+        }
+      ]
+    },
+    {
+      "id": "E2",
+      "title": "场景：诊断失败流（环 + 冲突证据均被定位）",
+      "kind": "pipeline",
+      "steps": [
+        {
+          "script": "validate_map.py",
+          "args": [
+            "--json"
+          ],
+          "fixture": "tests/fixtures/graph_cycle.json",
+          "expect_exit": 1,
+          "expect_error_code": "dependency_cycle"
+        },
+        {
+          "script": "validate_state.py",
+          "args": [
+            "--json"
+          ],
+          "fixture": "tests/fixtures/state_conflict.json",
+          "expect_exit": 1,
+          "expect_error_code": "conflicting_evidence"
+        }
+      ]
+    },
+    {
+      "id": "E3",
+      "title": "场景：恢复与跨模块一致性",
+      "kind": "pipeline",
+      "steps": [
+        {
+          "script": "validate_state.py",
+          "args": [
+            "--json"
+          ],
+          "fixture": "tests/fixtures/state_valid.json",
+          "expect_exit": 0
+        },
+        {
+          "script": "validate_references.py",
+          "args": [
+            "--json"
+          ],
+          "expect_exit": 0
+        },
+        {
+          "script": "check_consistency.py",
+          "args": [
+            "--json"
+          ],
+          "expect_exit": 0
+        }
+      ]
+    }
   ]
 }
