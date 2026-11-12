@@ -1,0 +1,54 @@
+{
+  "project_id": "PROJECT-001",
+  "status": "active",
+  "current_stage": "TEACH",
+  "versions": {
+    "knowledge_map": 1,
+    "dependency_graph": 1,
+    "roadmap": 1,
+    "state": 1
+  },
+  "current_node": "NODE-001",
+  "next_task": "完成验证题",
+  "weak_nodes": [],
+  "progress": [
+    {
+      "project_id": "PROJECT-001",
+      "node_id": "NODE-001",
+      "mastery_level": 3,
+      "evidence": [
+        {
+          "node_id": "NODE-001",
+          "assessment_type": "application",
+          "result": "pass",
+          "reasoning_quality": "supported",
+          "error_type": null,
+          "date": "2026-11-12",
+          "mastery_decision": 3,
+          "confidence": "provisional"
+        }
+      ],
+      "confidence": "provisional",
+      "misconceptions": [],
+      "last_assessed": "2026-11-12",
+      "review_status": "scheduled",
+      "next_review": "2026-11-19",
+      "learning_history": []
+    }
+  ],
+  "events": [
+    {
+      "event": "project_created",
+      "date": "2026-11-12",
+      "detail": "创建项目"
+    },
+    {
+      "event": "assessment_completed",
+      "date": "2026-11-12",
+      "detail": "常规题通过"
+    }
+  ],
+  "history": [
+    "snapshot-001"
+  ]
+}
