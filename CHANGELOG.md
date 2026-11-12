@@ -22,7 +22,7 @@
 - V2 回归 `run_tests.py`：47 用例 44 通过 / 0 失败 / 3 未自动化（**未退化**）
 - V3 套件 `run_v3_tests.py`：47 用例 44 通过 / 0 失败 / 3 未自动化；含场景 A–H 决策优先级断言、10 模板校验、能力/练习/图谱引擎、迁移全流程、V2 回归
 - `run_benchmark.py`：12 领域 12 通过 / 0 失败
-- `quick_validate.py` 通过；`validate_references.py` 113 处引用有效；`check_consistency.py` 18 个脚本可编译；`package_skill.py` Skill is valid
+- `quick_validate.py` 通过；`validate_references.py` 126 处引用有效；`check_consistency.py` 18 个脚本可编译；`package_skill.py` Skill is valid
 
 ### 迁移与回滚
 
