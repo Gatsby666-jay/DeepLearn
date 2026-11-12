@@ -1,0 +1,9 @@
+{
+  "project_id": "PROJECT-001",
+  "nodes": [
+    {"id": "NODE-001", "prerequisites": ["NODE-999"]}
+  ],
+  "stages": [
+    {"id": "S1", "nodes": ["NODE-001"], "depends_on": [], "duration": {"min_hours": 1, "max_hours": 2}}
+  ]
+}
