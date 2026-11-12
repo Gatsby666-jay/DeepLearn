@@ -1,0 +1,10 @@
+{
+  "project_id": "PROJECT-001",
+  "nodes": [
+    {"id": "NODE-001", "prerequisites": []}
+  ],
+  "stages": [
+    {"id": "S1", "nodes": ["NODE-001"], "depends_on": [], "duration": {"min_hours": 5, "max_hours": 1}}
+  ],
+  "critical_path": ["S1"]
+}
