@@ -1,0 +1,372 @@
+{
+  "suite": "DeepLearn V3 12-domain benchmark",
+  "version": 1,
+  "cases": [
+    {
+      "benchmark_id": "B01",
+      "domain": "数学基础",
+      "input": "补齐代数基础",
+      "expected_classification": "academic_subject",
+      "expected_knowledge_structure": [
+        "数与式",
+        "方程",
+        "函数",
+        "不等式"
+      ],
+      "expected_prerequisites": [
+        "数与式",
+        "方程"
+      ],
+      "expected_teaching_strategy": [
+        "derivation",
+        "diagram"
+      ],
+      "expected_assessment": [
+        "application",
+        "derivation"
+      ],
+      "failure_conditions": [
+        "分类不在七类枚举内",
+        "前置未出现在知识结构中",
+        "教学策略或评估方式越界",
+        "缺少可机读失败条件"
+      ]
+    },
+    {
+      "benchmark_id": "B02",
+      "domain": "微积分",
+      "input": "从零学微积分",
+      "expected_classification": "academic_subject",
+      "expected_knowledge_structure": [
+        "函数",
+        "极限",
+        "导数",
+        "积分",
+        "级数"
+      ],
+      "expected_prerequisites": [
+        "函数",
+        "极限"
+      ],
+      "expected_teaching_strategy": [
+        "derivation",
+        "diagram"
+      ],
+      "expected_assessment": [
+        "derivation",
+        "application"
+      ],
+      "failure_conditions": [
+        "分类不在七类枚举内",
+        "前置未出现在知识结构中",
+        "教学策略或评估方式越界",
+        "缺少可机读失败条件"
+      ]
+    },
+    {
+      "benchmark_id": "B03",
+      "domain": "物理原理",
+      "input": "理解能量守恒",
+      "expected_classification": "individual_concept",
+      "expected_knowledge_structure": [
+        "功",
+        "动能",
+        "势能",
+        "守恒条件"
+      ],
+      "expected_prerequisites": [
+        "功",
+        "动能"
+      ],
+      "expected_teaching_strategy": [
+        "intuition",
+        "experiment"
+      ],
+      "expected_assessment": [
+        "explanation",
+        "prediction"
+      ],
+      "failure_conditions": [
+        "分类不在七类枚举内",
+        "前置未出现在知识结构中",
+        "教学策略或评估方式越界",
+        "缺少可机读失败条件"
+      ]
+    },
+    {
+      "benchmark_id": "B04",
+      "domain": "电路基础",
+      "input": "电容器为什么能储能",
+      "expected_classification": "specific_problem",
+      "expected_knowledge_structure": [
+        "电场",
+        "电容",
+        "充放电",
+        "时间常数"
+      ],
+      "expected_prerequisites": [
+        "电场",
+        "电容"
+      ],
+      "expected_teaching_strategy": [
+        "diagram",
+        "experiment"
+      ],
+      "expected_assessment": [
+        "prediction",
+        "counterexample"
+      ],
+      "failure_conditions": [
+        "分类不在七类枚举内",
+        "前置未出现在知识结构中",
+        "教学策略或评估方式越界",
+        "缺少可机读失败条件"
+      ]
+    },
+    {
+      "benchmark_id": "B05",
+      "domain": "C 语言",
+      "input": "懂 C 基础但不会指针",
+      "expected_classification": "specific_problem",
+      "expected_knowledge_structure": [
+        "内存地址",
+        "指针变量",
+        "解引用",
+        "内存布局"
+      ],
+      "expected_prerequisites": [
+        "内存地址",
+        "指针变量"
+      ],
+      "expected_teaching_strategy": [
+        "code",
+        "socratic"
+      ],
+      "expected_assessment": [
+        "debugging",
+        "explanation"
+      ],
+      "failure_conditions": [
+        "分类不在七类枚举内",
+        "前置未出现在知识结构中",
+        "教学策略或评估方式越界",
+        "缺少可机读失败条件"
+      ]
+    },
+    {
+      "benchmark_id": "B06",
+      "domain": "数据结构",
+      "input": "搞懂哈希表冲突处理",
+      "expected_classification": "individual_concept",
+      "expected_knowledge_structure": [
+        "散列函数",
+        "冲突",
+        "链地址法",
+        "开放寻址"
+      ],
+      "expected_prerequisites": [
+        "散列函数",
+        "冲突"
+      ],
+      "expected_teaching_strategy": [
+        "diagram",
+        "code"
+      ],
+      "expected_assessment": [
+        "application",
+        "debugging"
+      ],
+      "failure_conditions": [
+        "分类不在七类枚举内",
+        "前置未出现在知识结构中",
+        "教学策略或评估方式越界",
+        "缺少可机读失败条件"
+      ]
+    },
+    {
+      "benchmark_id": "B07",
+      "domain": "操作系统",
+      "input": "理解进程与线程区别",
+      "expected_classification": "individual_concept",
+      "expected_knowledge_structure": [
+        "进程",
+        "线程",
+        "调度",
+        "同步"
+      ],
+      "expected_prerequisites": [
+        "进程",
+        "调度"
+      ],
+      "expected_teaching_strategy": [
+        "diagram",
+        "case"
+      ],
+      "expected_assessment": [
+        "explanation",
+        "counterexample"
+      ],
+      "failure_conditions": [
+        "分类不在七类枚举内",
+        "前置未出现在知识结构中",
+        "教学策略或评估方式越界",
+        "缺少可机读失败条件"
+      ]
+    },
+    {
+      "benchmark_id": "B08",
+      "domain": "Git",
+      "input": "上手 Git 分支与合并",
+      "expected_classification": "software_tool",
+      "expected_knowledge_structure": [
+        "工作区",
+        "提交",
+        "分支",
+        "合并"
+      ],
+      "expected_prerequisites": [
+        "工作区",
+        "提交"
+      ],
+      "expected_teaching_strategy": [
+        "code",
+        "case"
+      ],
+      "expected_assessment": [
+        "application",
+        "debugging"
+      ],
+      "failure_conditions": [
+        "分类不在七类枚举内",
+        "前置未出现在知识结构中",
+        "教学策略或评估方式越界",
+        "缺少可机读失败条件"
+      ]
+    },
+    {
+      "benchmark_id": "B09",
+      "domain": "Python",
+      "input": "学会用装饰器",
+      "expected_classification": "software_tool",
+      "expected_knowledge_structure": [
+        "函数",
+        "闭包",
+        "装饰器",
+        "作用域"
+      ],
+      "expected_prerequisites": [
+        "函数",
+        "闭包"
+      ],
+      "expected_teaching_strategy": [
+        "code",
+        "socratic"
+      ],
+      "expected_assessment": [
+        "application",
+        "derivation"
+      ],
+      "failure_conditions": [
+        "分类不在七类枚举内",
+        "前置未出现在知识结构中",
+        "教学策略或评估方式越界",
+        "缺少可机读失败条件"
+      ]
+    },
+    {
+      "benchmark_id": "B10",
+      "domain": "STM32",
+      "input": "用 GPIO 点亮 LED",
+      "expected_classification": "technical_domain",
+      "expected_knowledge_structure": [
+        "时钟",
+        "GPIO",
+        "寄存器",
+        "中断"
+      ],
+      "expected_prerequisites": [
+        "时钟",
+        "GPIO"
+      ],
+      "expected_teaching_strategy": [
+        "code",
+        "experiment"
+      ],
+      "expected_assessment": [
+        "application",
+        "debugging"
+      ],
+      "failure_conditions": [
+        "分类不在七类枚举内",
+        "前置未出现在知识结构中",
+        "教学策略或评估方式越界",
+        "缺少可机读失败条件"
+      ]
+    },
+    {
+      "benchmark_id": "B11",
+      "domain": "PID",
+      "input": "能解释 PID 但不会调参",
+      "expected_classification": "individual_concept",
+      "expected_knowledge_structure": [
+        "比例项",
+        "积分项",
+        "微分项",
+        "超调",
+        "稳定性"
+      ],
+      "expected_prerequisites": [
+        "比例项",
+        "积分项"
+      ],
+      "expected_teaching_strategy": [
+        "experiment",
+        "socratic"
+      ],
+      "expected_assessment": [
+        "parameter_tuning_verified",
+        "cross_domain_transfer"
+      ],
+      "failure_conditions": [
+        "分类不在七类枚举内",
+        "前置未出现在知识结构中",
+        "教学策略或评估方式越界",
+        "缺少可机读失败条件"
+      ]
+    },
+    {
+      "benchmark_id": "B12",
+      "domain": "工程项目",
+      "input": "制作 STM32 智能小车",
+      "expected_classification": "practical_project",
+      "expected_knowledge_structure": [
+        "GPIO",
+        "PWM",
+        "定时器",
+        "电机驱动",
+        "传感器",
+        "PID",
+        "电源",
+        "调试"
+      ],
+      "expected_prerequisites": [
+        "GPIO",
+        "PWM"
+      ],
+      "expected_teaching_strategy": [
+        "case",
+        "code"
+      ],
+      "expected_assessment": [
+        "independent_project",
+        "anomaly_resolution"
+      ],
+      "failure_conditions": [
+        "分类不在七类枚举内",
+        "前置未出现在知识结构中",
+        "教学策略或评估方式越界",
+        "缺少可机读失败条件"
+      ]
+    }
+  ]
+}
