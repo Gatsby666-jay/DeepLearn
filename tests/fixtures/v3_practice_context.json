@@ -1,0 +1,12 @@
+{
+  "knowledge_state": "independent_application",
+  "domain": "control",
+  "can_execute": false,
+  "attempted": false,
+  "target_node_ids": [
+    "NODE-001"
+  ],
+  "target_competencies": [
+    "COMP-001"
+  ]
+}
