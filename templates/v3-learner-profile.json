@@ -1,0 +1,33 @@
+{
+  "profile_id": "PROFILE-001",
+  "project_id": "PROJECT-001",
+  "schema_version": 3,
+  "created_at": "2026-11-12",
+  "updated_at": "2026-11-12",
+  "source": "template",
+  "prior_knowledge": [],
+  "learning_preferences": {
+    "code": {
+      "weight": 2,
+      "evidence_count": 0
+    }
+  },
+  "cognitive_load": {
+    "level": "unknown"
+  },
+  "misconception_profile": [],
+  "learning_behavior": {},
+  "learner_confidence": "unassessed",
+  "knowledge_states": [
+    {
+      "node_id": "NODE-001",
+      "state": "unexposed",
+      "evidence_count": 0,
+      "last_assessed": null
+    }
+  ],
+  "retention_summary": {
+    "status": "not_assessed"
+  },
+  "requires_assessment": true
+}
