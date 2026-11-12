@@ -145,6 +145,10 @@ def validate_node_structure(node: dict, errors: list, where: str = "node") -> No
         if not isinstance(gate, dict):
             err(errors, "invalid_gate", f"{where}: atomic_gate 必须是对象")
         else:
+            missing_gate = sorted(set(ATOMIC_GATE_KEYS) - set(gate))
+            if missing_gate:
+                err(errors, "gate_incomplete",
+                    f"{where}: 六问验收缺项 {', '.join(missing_gate)}")
             for key, value in gate.items():
                 if key not in ATOMIC_GATE_KEYS:
                     err(errors, "invalid_gate", f"{where}: 未知验收项 {key}")
@@ -176,6 +180,17 @@ def validate_node_structure(node: dict, errors: list, where: str = "node") -> No
                 if is_int(quality.get(dim)) and quality[dim] < 2:
                     err(errors, "gate_failed", f"{where}: 关键维度 {dim} 低于 2，禁止进入路线图")
 
+    # v2.1: conditional mandatory fields — quality gates must not be bypassable
+    level = node.get("decomposition_level")
+    if is_int(level) and level >= 3 and not node.get("mechanism") and not node.get("principles"):
+        err(errors, "missing_mechanism",
+            f"{where}: L3 以下节点必须有 mechanism 或 principles，禁止目录式条目")
+    if node.get("importance") == "essential":
+        if "atomic_gate" not in node:
+            err(errors, "gate_missing", f"{where}: 必修节点缺少六问验收 atomic_gate")
+        if "decomposition_quality" not in node:
+            err(errors, "quality_missing", f"{where}: 必修节点缺少分解质量分")
+
 
 def validate_edge_structure(edge: dict, errors: list, where: str = "edge") -> None:
     if not isinstance(edge, dict):
@@ -192,7 +207,8 @@ def validate_edge_structure(edge: dict, errors: list, where: str = "edge") -> No
             err(errors, "invalid_enum", f"{where}: {field}={edge[field]!r} 不在枚举内")
     if not edge.get("explanation"):
         err(errors, "missing_explanation", f"{where}: 必须说明为什么必须先掌握")
-    if edge.get("source_node_id") == edge.get("target_node_id"):
+    src, dst = edge.get("source_node_id"), edge.get("target_node_id")
+    if src is not None and dst is not None and src == dst:
         err(errors, "self_loop", f"{where}: 自环不允许")
 
 
