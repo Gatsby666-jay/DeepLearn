@@ -33,8 +33,8 @@
 
 ## G2 关联门 —— 建立依赖关系网络
 
-- 依赖图**零孤立节点**：除显式声明的「基础边界」外，每个节点至少有一条入边或出边。
-- 运行 `scripts/validate_map.py --strict`：存在孤立节点即失败，必须补边或标注理由。
+- 依赖图**零孤立节点**：除显式声明的「基础边界」或声明了范围与用途的独立可选概念外，每个节点至少有一条入边或出边。
+- 运行 `scripts/validate_map.py --strict`：孤立节点阻断；**多连通分量（多个合法独立分支）只作警告，不阻断**。
 - 按 three-graphs.md 的跨分支边发现清单主动找边，不让知识点彼此孤立。
 - 依赖图无环；结构图不得表达「必须先于」。
 
@@ -96,3 +96,11 @@
 G4 的「≤25 行」是可读性指导而非硬上限；判据以「一课一个新机制 + 独立推理任务 + 反馈」为准。
 
 G5 闭环门补齐：`REMEDIATE → REPLAN → PERSIST → CONTINUE` 必须回流到 `TEACH` / `MAP` / `PLAN`，不得线性结束；无 `PERSIST` 不得 `CONTINUE`；`VALIDATE` 失败不得进入 `PLAN`。闭环定义见 `core/orchestrator.md`。
+
+
+## v2.1 增补：代码级强制（不可再靠省略字段绕过）
+
+- `scripts/deeplearn_rules.py`：对 `importance=essential` 节点强制要求 `atomic_gate` 六项齐全与 `decomposition_quality`；对 L3 以下节点强制 `mechanism` 或 `principles`。缺字段报 `gate_missing` / `quality_missing` / `gate_incomplete` / `missing_mechanism`。
+- `scripts/validate_state.py`：强制 `evidence[].mastery_decision` 与 `mastery_level` 一致、`history` 非空、`current_stage` 与事件序列相容；分别报 `mastery_evidence_mismatch` / `history_missing` / `stage_event_mismatch`。
+- `scripts/validate_roadmap.py`：补齐阶段拓扑序、缺失前置、阶段引用、关键路径工期（按工期而非节点数）、非法时长与阶段环校验。
+- `scripts/validate_map.py`：`--strict` 不再因合法多分支失败；v2 图兼容 `from`/`to` 别名；字段缺失不再误报自环。
