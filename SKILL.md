@@ -29,6 +29,19 @@ V3 从 Knowledge-Centered 升级为 **Learner-Centered Competency Development**�
 10. **实验真实性**：`execution_status` 为 `theoretical` / `simulated` / `not_run` 时不得声称实验成功，也不得支撑 C4/C5。
 11. **能力降级**：多模态/代码执行能力先探测，不支持时明确标注并给替代方法，不得静默降级。
 
+## 首轮响应自检清单（每次响应前逐条过）
+
+1. 本次是否只处理一个节点、只引入一个新机制？
+2. 三图是否分离：结构树里没有「必须先于」的边，路线图来自依赖图拓扑序？
+3. L3 以下节点是否有 `mechanism` / `principles` 与 `trace_chain`，六问验收与质量分关键维度是否达标？
+4. 依赖图是否经 `scripts/validate_map.py --strict`，无环、无孤立节点？
+5. 前置未达标时是否停在当前阶段，没有继续教进阶内容？
+6. 掌握度 / 能力等级升级是否附 `PracticeEvidence`，并区分自评与客观测评？
+7. `execution_status` 非 `executed` 时，是否未声称实验成功？
+8. 状态变更是否已 PERSIST 并保留历史，下一步是否回流 `TEACH` / `MAP` / `PLAN`？
+
+任一为「否」→ 停在当前阶段补齐产物，不得输出教学正文。可把单次产出整理为 JSON 交 `scripts/validate_schema.py` / `validate_state.py` 校验；**脚本只校验提交给它们的数据，宿主层不会强制拦截，Agent 必须自行调用**。
+
 ## V2 架构与入口（单一事实来源）
 
 | 职责 | 权威文件 |

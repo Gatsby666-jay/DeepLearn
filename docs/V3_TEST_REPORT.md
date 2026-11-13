@@ -18,15 +18,15 @@
 
 ```
 quick_validate.py                 → 通过
-validate_references.py            → checked 126，内部引用全部有效
-check_consistency.py              → enums 15、scripts_compiled 18、markdown_headings 302，一致性通过
+validate_references.py            → checked 127，内部引用全部有效
+check_consistency.py              → enums 15、scripts_compiled 18、markdown_headings 303，一致性通过
 package_skill.py                  → Skill is valid!
 run_tests.py        (V2)          → 合计 47 | 通过 44 | 失败 0 | 未自动化 3
-run_v3_tests.py     (V3)          → 合计 47 | 通过 44 | 失败 0 | 未自动化 3
+run_v3_tests.py     (V3)          → 合计 53 | 通过 50 | 失败 0 | 未自动化 3
 run_benchmark.py    (Benchmark)   → 合计 12 | 通过 12 | 失败 0
 ```
 
-合计可执行用例 **106**（47 V2 + 47 V3 + 12 Benchmark），通过 100、失败 0、未自动化 6。
+合计可执行用例 **112**（47 V2 + 53 V3 + 12 Benchmark），通过 106、失败 0、未自动化 6。
 
 ## 3. V3 套件覆盖明细
 
@@ -34,12 +34,13 @@ run_benchmark.py    (Benchmark)   → 合计 12 | 通过 12 | 失败 0
 |---|---|---|
 | V01–V02 | 2 | V3 全结构容器与跨引用、悬空引用被拒 |
 | V03–V12 | 10 | 10 个 V3 模板逐一通过 schema |
-| SA–SH | 8 | 场景 A–H 的**决策优先级断言**（非空字符串检查） |
+| SA–SH | 8 | 场景 A–H 的 **`trace.priority` 精确值断言**（`expect_json` 逐条比对具体优先级，非字符串非空检查） |
 | V13 | 1 | 空上下文拒绝决策 |
 | V14–V17 | 4 | 能力 C4 / 未执行 C3 / 提示依赖 C2 / 推理为 0 C1 |
 | V18–V20 | 3 | 练习推荐、合法任务、三级提示缺失 |
 | V21–V22 | 2 | 图谱提案通过 / 单次错误被拒 |
 | V23–V26 | 4 | Benchmark、迁移全流程、V2 47 用例回归、V2 引用一致性 |
+| V27–V32 | 6 | 决策引擎退出码 1/2 分流、preferences 类型、时间约束分支、created_at 非硬编码、P1 不被时间跳过 |
 | C01–C08 | 8 | 文档契约检查（明确标注为契约，非场景执行） |
 | E01–E02 | 2 | 多脚本串联端到端数据流 |
 | N01–N03 | 3 | 主观能力，`SKIP_NOT_AUTOMATED` |
@@ -59,13 +60,15 @@ run_benchmark.py    (Benchmark)   → 合计 12 | 通过 12 | 失败 0
 
 场景验证的是**确定性决策输出与结构契约**，不是真实 Agent 端到端对话；后者仍未自动化。
 
-## 5. 迁移测试（test_migration.py，7 项断言）
+## 5. 迁移测试（test_migration.py，8 项断言）
 
 无备份拒绝迁移 ✓ / 备份生成 ✓ / 带备份迁移成功 ✓ / V2 字段零改动 ✓ / 证据与历史数量不变 ✓ / V3 字段只增不推断 ✓ / 回滚恢复原始字节 ✓ / 回滚后无 V3 字段 ✓。
 
 ## 6. 修复记录
 
 首轮 V3 套件 2 个失败（V23、E02）同源于 benchmark 数据把 `practice_type` 值（`simulation`、`project`）误填入 `teaching_modality`；另 1 个为微积分前置「函数」未列入知识结构。修正 3 处数据后重跑，12 领域全通过、V3 套件 0 失败。**未通过修改校验器来「修绿」**。
+
+v3.0.1 新增 6 条决策引擎回归（V27–V32），并把 V13 期望退出码由 2 改为 1 —— 这是 docstring 声明的「1 = blocking validation」首次真正落地，属于语义归位而非放宽断言；`run_v3_tests.py` 同步支持 `expect_json_ne`。
 
 ## 7. 未自动化与已知问题
 

@@ -31,7 +31,7 @@ SKILL.md（入口）
   ├─ evaluation/      V3
   ├─ scripts/         V2 8 个 + V3 新增（互不覆盖）
   ├─ templates/       V2 2 个 + V3 10 个
-  ├─ tests/           V2 47 用例 + V3 用例（V2 不删）
+  ├─ tests/           V2 47 用例 + V3 53 用例（V2 不删）
   └─ benchmarks/      V3 12 领域
 ```
 

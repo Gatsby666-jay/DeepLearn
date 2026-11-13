@@ -2,6 +2,8 @@
 
 > 通用的自适应学习引擎 Skill（v3.0）—— 把任何学习目标递归拆到知识原子，用三张图组织认知，用完整闭环与迁移任务验证真正理解。
 
+[![tests](https://github.com/Gatsby666-jay/DeepLearn/actions/workflows/test.yml/badge.svg)](https://github.com/Gatsby666-jay/DeepLearn/actions/workflows/test.yml)
+
 *A general-purpose Agent Skill for recursive knowledge decomposition, prerequisite graphs, progressive teaching, and transfer-based mastery.*
 
 ---
@@ -145,6 +147,8 @@ flowchart LR
 
 ## 快速开始
 
+本项目以 [MIT](LICENSE) 协议发布，可自由使用、复制、修改与商用集成。
+
 ### 安装
 
 把本仓库整个目录放到你的 Agent 平台的 skills 目录，目录名必须保持 `deeplearn`（与 frontmatter 的 `name` 一致）：
@@ -213,8 +217,9 @@ deeplearn/
 │   ├── validate_schema.py  ├── validate_references.py  ├── validate_state.py
 │   ├── validate_roadmap.py  ├── check_consistency.py  └── run_tests.py
 ├── tests/
-│   ├── cases.json               # 47 用例：29 脚本 + 12 契约 + 3 串联 + 3 未自动化
-│   └── fixtures/                # 24 个静态 JSON 样本（正常、失败与回归）
+│   ├── cases.json               # V2 47 用例：29 脚本 + 12 契约 + 3 串联 + 3 未自动化
+│   ├── v3_cases.json            # V3 53 用例：40 脚本 + 8 契约 + 2 串联 + 3 未自动化
+│   └── fixtures/                # 静态 JSON 样本（正常、失败与回归）
 └── examples/
     ├── academic-subject.md  ├── individual-concept.md
     ├── technical-domain.md  └── practical-project.md
@@ -236,17 +241,29 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 ## 通用性
 
 - 规则与内容**完全分离**：`SKILL.md` 和 `references/` 里没有任何学科、工具或项目被写进规则本身。嵌入式、PID、泰勒展开、智能小车只作为 `examples/` 中的格式锚点出现，用于示范粒度，不参与判定。
-- 七类分类、分解链、三图、路径、掌握度、迁移模板、五道门禁都是领域无关的结构，可直接用于语言学习、法律、医学、设计、演奏等任何可拆解的目标。
+- 七类分类、分解链、三图、路径、掌握度、迁移模板、五道门禁都是领域无关的结构，**适用于以陈述性知识与可形式化的程序性知识为主的领域**（数学、编程、工程、自然科学理论、软件工具、可拆解的项目与考试目标）；对其他领域只保证结构可用，不保证教学效果。
+- **默会知识边界**：乐器演奏、体育动作、手术手法等目标的核心成分是程序性记忆与肌肉反馈，无法用「六问验收 + 公理化拆解」有效刻画，见「已知限制」。
 - 不依赖网络、外部 API、特定模型或特定平台；Mermaid 只是推荐的呈现方式，环境不支持时可用缩进树与表格替代。
 - 学习状态默认写到 Skill 包之外的 `deeplearn-state/<project>.md`，不污染安装目录，项目之间互不干扰。
 
 ## 验证状态
 
-已实际执行（本机，2026-11-09）：
+已实际执行（本机，2026-11-13）；GitHub Actions 在每次 push / PR 复跑同一套命令：
+
+**证据强度构成（合计 112 个可执行用例）**
+
+| 断言类型 | 数量 | 含义 |
+|---|---|---|
+| 确定性脚本断言 | 81 | V2 29 + V3 40 + Benchmark 12，真实输入输出比对 |
+| 文档契约检查 | 20 | V2 12 + V3 8，只检查文档是否含关键词，**不验证行为** |
+| 多脚本串联数据流 | 5 | V2 3 + V3 2 |
+| **真实 Agent 端到端** | **0** | 尚未建立，不宣称已验证 |
+| 未自动化主观能力 | 6 | N01–N03 ×2，标 `SKIP_NOT_AUTOMATED` |
 
 | 项目 | 结果 |
 |---|---|
-| `scripts/run_v3_tests.py` v3.0 全套 | **47 用例：44 通过 / 0 失败 / 3 未自动化**；含 8 场景 A–H 决策断言、10 模板校验、迁移全流程 |
+| `.github/workflows/test.yml` | push / PR 自动复跑下列 8 组命令，状态见顶部徽章 |
+| `scripts/run_v3_tests.py` v3.0 全套 | **53 用例：50 通过 / 0 失败 / 3 未自动化**；含 8 场景 A–H 精确优先级断言、10 模板校验、迁移全流程、V27–V32 决策引擎回归 |
 | `scripts/run_benchmark.py` | 12 领域 Benchmark：**12 通过 / 0 失败**（数学基础…工程项目） |
 | V2 `run_tests.py` 回归 | 47 用例：44 通过 / 0 失败 / 3 未自动化，V3 升级后未退化 |
 | `scripts/run_tests.py` v2.1 全套 | **47 用例：44 通过、0 失败、3 项主观能力标注为未自动化**（29 脚本断言 + 12 契约检查 + 3 串联场景） |
@@ -254,7 +271,7 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 | 验收缺陷回归 G1–G6 | 六问门禁、证据决策、历史保护、阶段事件、strict 多分支、别名边，全部按预期被拒或通过 |
 | `validate_map.py` 增强图校验 | 重复 ID / 缺失引用 / 自环 / 环 / 重复边 / 非法枚举 / 断连分量 / 六问门禁，均有失败样本并通过断言 |
 | `validate_schema.py`、`validate_state.py` | 模板通过；非法字段、非法掌握度、冲突证据均被拒绝 |
-| `validate_references.py`、`check_consistency.py` | 92 处内部引用有效；枚举文档与代码一致；7 个脚本可编译 |
+| `validate_references.py`、`check_consistency.py` | 127 处内部引用有效；枚举文档与代码一致；18 个脚本可编译 |
 | `skill-maker/scripts/quick_validate.py` | 通过 —— frontmatter、name 与目录名一致、description、无待办标记、本地链接全部有效 |
 | `skill-creator/scripts/package_skill.py` | `Skill is valid!`，成功打包 `deeplearn.zip` |
 | `validate_map.py` 正常用例（8 节点跨分支图） | 退出 0 —— 起点正确、拓扑序、4 个建议阶段、终点节点 |
@@ -299,8 +316,10 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 - Orchestrator、state 读写/快照、replan、复习调度、资源验证器仍是规则级设计，无运行时执行代码。
 - 时长是估算区间（默认按每周 3–5 小时），不是精确承诺。
 - 大目标的准确性依赖 Agent 自身的领域知识；规则能防止「跳前置」和「假装掌握」，不能替代事实核查。
+- **默会知识 / 运动技能类目标**（乐器演奏、体育动作、手术手法）的核心成分无法被六问验收与公理化拆解有效刻画。本方法论对这类目标只能产出形式合格但教学价值有限的拆解，不应强行套用六问门禁。
+- 引擎深度按 `scripts/` 下的可执行逻辑评估，不按目录名或文档篇幅评估；`evaluation/`、`multimodal/` 等目录的文档是接口说明，不是实现。
 
-## v3 方向（建议）
+## v4 方向（建议）
 
 - 接入可运行沙盒，自动判题并把结果写回掌握度。
 - 节点 schema 导出 JSON，供外部图工具与可视化复用。

@@ -1,0 +1,21 @@
+{
+  "project_id": "PROJECT-001",
+  "goal": "时间受限但存在阻塞性前置缺口",
+  "nodes": [
+    {
+      "node_id": "NODE-010",
+      "mastery_level": 2,
+      "importance": "essential",
+      "review_status": "completed",
+      "prerequisite_gaps": [
+        {
+          "node_id": "NODE-001",
+          "necessity": "required"
+        }
+      ]
+    }
+  ],
+  "competency_progress": [],
+  "common_errors": [],
+  "time_constraint_hours": 1
+}

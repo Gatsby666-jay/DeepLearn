@@ -249,14 +249,14 @@
     },
     {
       "id": "V13",
-      "title": "空上下文不得决策",
+      "title": "空上下文不得决策（阻塞性校验，退出码 1）",
       "kind": "script",
       "script": "decision_engine.py",
       "args": [
         "--json"
       ],
       "fixture": "tests/fixtures/v3_decision_empty.json",
-      "expect_exit": 2
+      "expect_exit": 1
     },
     {
       "id": "V14",
@@ -579,6 +579,90 @@
           }
         }
       ]
+    },
+    {
+      "id": "V27",
+      "title": "JSON 语法错误返回参数错误码 2",
+      "kind": "script",
+      "script": "decision_engine.py",
+      "args": [
+        "--json"
+      ],
+      "stdin": "{not-json",
+      "expect_exit": 2
+    },
+    {
+      "id": "V28",
+      "title": "preferences 为 list 时受控拒绝而非 traceback",
+      "kind": "script",
+      "script": "decision_engine.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/v3_decision_bad_prefs.json",
+      "expect_exit": 1
+    },
+    {
+      "id": "V29",
+      "title": "时间约束真正参与分支：P6 收缩为最小可达子集",
+      "kind": "script",
+      "script": "decision_engine.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/v3_decision_tight.json",
+      "expect_exit": 0,
+      "expect_json": {
+        "trace.priority": "P6_optional_expansion",
+        "trace.time_constraint_applied": true,
+        "decision.allow_advance": "no",
+        "decision.enter_project_practice": "no"
+      }
+    },
+    {
+      "id": "V30",
+      "title": "无时间约束时保持原行为且 created_at 非硬编码",
+      "kind": "script",
+      "script": "decision_engine.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/v3_decision_relaxed.json",
+      "expect_exit": 0,
+      "expect_json": {
+        "trace.time_constraint_applied": false,
+        "decision.allow_advance": "yes"
+      },
+      "expect_json_ne": {
+        "plan.created_at": "2026-11-12"
+      }
+    },
+    {
+      "id": "V31",
+      "title": "time_constraint_hours 类型非法时受控拒绝",
+      "kind": "script",
+      "script": "decision_engine.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/v3_decision_bad_time.json",
+      "expect_exit": 1
+    },
+    {
+      "id": "V32",
+      "title": "时间受限也不跳过 P1 阻塞性前置补救",
+      "kind": "script",
+      "script": "decision_engine.py",
+      "args": [
+        "--json"
+      ],
+      "fixture": "tests/fixtures/v3_decision_tight_p1.json",
+      "expect_exit": 0,
+      "expect_json": {
+        "trace.priority": "P1_blocking_prerequisite_gap",
+        "decision.needs_prerequisite_repair": "yes",
+        "decision.allow_advance": "no"
+      }
     },
     {
       "id": "N01",

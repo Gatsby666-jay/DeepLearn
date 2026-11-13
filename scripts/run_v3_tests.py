@@ -2,6 +2,8 @@
 """V3 test-suite runner with JSON-path assertions.
 
 Usage: python run_v3_tests.py [root] [--json] [--case V01]
+Script steps support expect_json (exact equality on dotted paths) and
+expect_json_ne (value must differ from the given constant).
 Exit codes: 0 all executed cases passed, 1 failure, 2 parse error.
 """
 from __future__ import annotations
@@ -43,6 +45,17 @@ def run_step(root, step):
                 if actual != expected:
                     ok = False
                     detail[f"expect {dotted}"] = f"expected {expected!r}, got {actual!r}"
+        except (ValueError, AttributeError):
+            ok = False
+            detail["parse"] = "无法解析 --json 输出"
+    if ok and step.get("expect_json_ne"):
+        try:
+            payload = json.loads(proc.stdout)
+            for dotted, forbidden in step["expect_json_ne"].items():
+                actual = get_path(payload, dotted)
+                if actual == forbidden:
+                    ok = False
+                    detail[f"forbid {dotted}"] = f"must differ from {forbidden!r}, got {actual!r}"
         except (ValueError, AttributeError):
             ok = False
             detail["parse"] = "无法解析 --json 输出"

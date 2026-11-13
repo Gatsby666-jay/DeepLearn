@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v3.0.1 — 工程卫生与决策引擎修复（2026-11-13）
+
+依据 2026-11-13 外部评审《DeepLearn 项目问题与改进措施》落地，**V3 数据结构与学习闭环零改动**。
+
+| 项 | 内容 |
+|---|---|
+| 许可证 | 新增 `LICENSE`（MIT，Copyright (c) 2026 Gatsby666-jay）；README 快速开始注明协议，解除 fork / 集成的法律阻塞 |
+| 持续集成 | 新增 `.github/workflows/test.yml`：push / PR 自动跑 compileall、引用、一致性、V2、V3、Benchmark、迁移、图与路线图校验共 8 组命令；README 挂状态徽章 |
+| 文档事实订正 | README 验证表头日期改为实际执行日、证据强度拆成「脚本 81 / 契约 20 / 串联 5 / **端到端 0** / 未自动化 6」、引用数 126→127；`docs/V3_TEST_REPORT.md` 修正把 SA–SH 误述为「非空字符串检查」（实际为 `trace.priority` 精确值断言）与迁移「7 项」→ 8 项；CHANGELOG 同步 |
+| 普适性边界 | README 删除「演奏」等无边界主张，限定为陈述性 / 可形式化程序性知识；已知限制新增默会知识与运动技能条目 |
+| `decision_engine.py` | ① 新增 `BlockingValidation`，业务阻塞返回退出码 1、参数与解析错误返回 2（原 docstring 声明的 1 永不发生）；② `preferences` 非 dict 受控拒绝，不再 traceback；③ `time_constraint_hours` 真正参与分支（≤2h 时 P6 收缩为最小可达子集，P1/P2 补救不被跳过）；④ `created_at` 改运行时 UTC，去掉硬编码日期；⑤ 修正空信号错误文案 |
+| 测试 | `run_v3_tests.py` 支持 `expect_json_ne`；新增 V27–V32 六条回归与 5 个 fixture；V13 期望退出码 2→1（语义归位，非放宽） |
+| 首轮自检 | `SKILL.md` 新增 8 条首轮响应自检清单，把 G1–G5 前置到 Agent 必然加载的内容；明确「脚本不能宿主强制拦截」 |
+| 发布方式 | `publish_v2.py` 从 Contents API 逐文件 PUT 改为 Git Data API 单提交（tree → commit → ref），一次发布只产生 1 条 commit；**不重写历史** |
+
+### 测试
+
+V2 47（44 通过 / 0 失败 / 3 未自动化）+ V3 53（50 通过 / 0 失败 / 3 未自动化）+ Benchmark 12 = **112 用例，106 通过 / 0 失败 / 6 未自动化**；`validate_references.py` 127 处引用有效；`check_consistency.py` 18 个脚本可编译；`package_skill.py` 报 Skill is valid；GitHub Actions 首次运行绿。
+
+### 历史提交说明
+
+2026-11-12 的 v3.0 推送产生 30+ 条同名 commit，成因是旧发布脚本按文件调用 Contents API，每个文件生成一条 commit，并非逐文件测试后的独立提交。自 v3.0.1 起改为单提交；已有历史保留，不做 rebase / force push。
+
+
 ## v3.0 — Adaptive Learning Intelligence System（2026-11-12）
 
 从 Knowledge-Centered Learning 升级为 **Learner-Centered Competency Development**。**V2 零删除、零移动、零 schema 改动**：64 个原文件、47 个测试、8 个脚本行为、12 阶段 Orchestrator 全部保留。
@@ -26,7 +50,7 @@
 
 ### 迁移与回滚
 
-`docs/V3_MIGRATION.md` 定义只增不改的字段映射；`migrate_v2_v3.py` 无备份拒绝迁移、迁移前校验 sha256、verify 逐字段比对 V2 原值、rollback 恢复原始字节。`test_migration.py` 端到端断言 7 项全部通过。
+`docs/V3_MIGRATION.md` 定义只增不改的字段映射；`migrate_v2_v3.py` 无备份拒绝迁移、迁移前校验 sha256、verify 逐字段比对 V2 原值、rollback 恢复原始字节。`test_migration.py` 端到端断言 8 项全部通过。
 
 ### 已知限制
 

@@ -7,12 +7,19 @@ Output: nine decision fields plus a short reason and a priority trace.
 
 Usage: python decision_engine.py context.json [--json] [--output plan.json]
 Exit codes: 0 decision produced, 1 blocking validation, 2 argument/parse error.
+
+Time constraint is an actual decision input, not a pass-through field:
+when time_constraint_hours is a positive number <= TIGHT_BUDGET_HOURS,
+optional expansion (P6) is suppressed to a minimal viable subset and the
+reason records the constraint. Mandatory prerequisite repair (P1) and
+recurring-misconception remediation (P2) are never skipped for time reasons.
 """
 from __future__ import annotations
 
 import argparse
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 from v3_rules import ENUMS, SCHEMA_VERSION
@@ -23,14 +30,29 @@ PRIORITY = [
     "P5_practice_for_competency", "P6_optional_expansion",
 ]
 
+TIGHT_BUDGET_HOURS = 2
+
+
+class BlockingValidation(ValueError):
+    """Business-level validation failure, reported with exit code 1."""
+
 
 def decide(ctx):
     if not isinstance(ctx, dict):
-        raise ValueError("决策上下文必须是对象")
+        raise BlockingValidation("决策上下文必须是对象")
+
     nodes = ctx.get("nodes", []) or []
     comps = ctx.get("competency_progress", []) or []
     errors = ctx.get("common_errors", []) or []
     prefs = ctx.get("preferences", {}) or {}
+    if not isinstance(prefs, dict):
+        raise BlockingValidation("preferences 必须是对象：键为教学表征，数值为权重")
+
+    time_raw = ctx.get("time_constraint_hours")
+    if time_raw is not None:
+        if isinstance(time_raw, bool) or not isinstance(time_raw, (int, float)) or time_raw <= 0:
+            raise BlockingValidation("time_constraint_hours 必须是正数（小时）")
+    tight = isinstance(time_raw, (int, float)) and 0 < time_raw <= TIGHT_BUDGET_HOURS
 
     gaps = [n for n in nodes if (n.get("prerequisite_gaps") or [])
             and any(g.get("necessity", "required") == "required"
@@ -84,10 +106,10 @@ def decide(ctx):
         "weak_nodes": len(weak), "low_competencies": len(low_comp),
     }
     if sum(evidence_signals.values()) < 1:
-        raise ValueError("不得只凭单一信号决策：上下文为空")
+        raise BlockingValidation("决策上下文无任何可用信号，禁止输出决策")
 
     reason = f"{problem}；依据 {evidence_signals} 与六类信号，按优先级 {priority} 决定。"
-    return {
+    decision = {
         "current_problem": problem, "next_node_id": next_node,
         "needs_review": "yes" if review else "no",
         "needs_prerequisite_repair": "yes" if repair else "no",
@@ -95,8 +117,23 @@ def decide(ctx):
         "enter_project_practice": "yes" if project else "no",
         "allow_advance": "yes" if advance and not repair else "no",
         "reason": reason,
-    }, {"priority": priority, "trace": PRIORITY[:PRIORITY.index(priority) + 1],
-        "signals": evidence_signals, "time_constraint_hours": ctx.get("time_constraint_hours")}
+    }
+
+    if tight:
+        if priority == PRIORITY[5]:
+            decision["allow_advance"] = "no"
+            decision["enter_project_practice"] = "no"
+            decision["practice_type"] = "concept"
+            decision["reason"] = reason + (
+                f"；时间约束 {time_raw}h ≤ {TIGHT_BUDGET_HOURS}h，仅安排最小可达子集，跳过选修与延展")
+        else:
+            decision["reason"] = reason + (
+                f"；时间约束 {time_raw}h ≤ {TIGHT_BUDGET_HOURS}h，优先必修节点，不跳过 P1/P2 补救")
+
+    trace = {"priority": priority, "trace": PRIORITY[:PRIORITY.index(priority) + 1],
+             "signals": evidence_signals, "time_constraint_hours": time_raw,
+             "time_constraint_applied": bool(tight)}
+    return decision, trace
 
 
 def main() -> int:
@@ -107,13 +144,25 @@ def main() -> int:
     args = parser.parse_args()
     try:
         raw = sys.stdin.read() if args.path == "-" else Path(args.path).read_text(encoding="utf-8-sig")
+    except OSError as exc:
+        print(f"读取失败：{exc}", file=sys.stderr)
+        return 2
+    try:
         ctx = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        print(f"JSON 解析失败：{exc}", file=sys.stderr)
+        return 2
+    try:
         decision, trace = decide(ctx)
-    except (OSError, ValueError, json.JSONDecodeError) as exc:
-        print(f"决策失败：{exc}", file=sys.stderr)
+    except BlockingValidation as exc:
+        print(f"阻塞性校验未通过：{exc}", file=sys.stderr)
+        return 1
+    except (ValueError, TypeError, AttributeError, KeyError) as exc:
+        print(f"上下文结构错误：{exc}", file=sys.stderr)
         return 2
     plan = {"plan_id": "PLAN-001", "project_id": ctx.get("project_id", "PROJECT-001"),
-            "version": 1, "created_at": "2026-11-12", "goal": ctx.get("goal", ""),
+            "version": 1, "created_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+            "goal": ctx.get("goal", ""),
             "decision": decision, "stages": [], "next_action": decision["next_node_id"],
             "reason": decision["reason"], "schema_version": SCHEMA_VERSION,
             "source": "decision_engine", "priority_trace": trace}

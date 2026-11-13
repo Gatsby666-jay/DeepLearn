@@ -1,0 +1,14 @@
+{
+  "project_id": "PROJECT-001",
+  "goal": "主干达标后的选修扩展",
+  "nodes": [
+    {
+      "node_id": "NODE-001",
+      "mastery_level": 4,
+      "importance": "essential",
+      "review_status": "completed"
+    }
+  ],
+  "competency_progress": [],
+  "common_errors": []
+}

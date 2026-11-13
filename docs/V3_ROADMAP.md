@@ -23,7 +23,11 @@
 - Benchmark 只断言结构/枚举/引用，不判定解释文本质量。
 - 学习者画像的「偏好」由确定性权重规则约束，但教学表征的实际效果由 Agent 记录，脚本无法验证记录真实性。
 
-## 3. V4 建议
+## 3. v3.0.1 已完成（2026-11-13）
+
+LICENSE（MIT）、GitHub Actions CI、README / 测试报告 / CHANGELOG 的事实订正、默会知识边界声明、`decision_engine.py` 五处缺陷修复与 6 条回归、`SKILL.md` 首轮自检清单、发布改单提交均已落地。这些属于工程卫生与局部代码修复，**不改变本节列举的运行时缺失**：Orchestrator 状态机、state 读写快照、replan、复习调度、资源验证器仍无执行代码。
+
+## 4. V4 建议
 
 1. 引入可选的 `state_engine.py`：真正读写 state.json / 快照 / 跨会话恢复，把 V2/V3 规则级状态变成可执行。
 2. 接入代码沙盒：让 `execution_status=executed` 有真实输出支撑，自动判题并回写能力证据。
