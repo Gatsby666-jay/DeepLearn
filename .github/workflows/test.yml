@@ -1,0 +1,38 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deterministic-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile scripts
+        run: python -m compileall -q scripts
+      - name: Internal references and consistency
+        run: |
+          python scripts/validate_references.py .
+          python scripts/check_consistency.py .
+      - name: V2 regression
+        run: python scripts/run_tests.py .
+      - name: V3 suite
+        run: python scripts/run_v3_tests.py .
+      - name: Twelve-domain benchmark
+        run: python scripts/run_benchmark.py
+      - name: V2 to V3 migration
+        run: python scripts/test_migration.py
+      - name: Structural graph validators
+        run: |
+          printf 'flowchart LR\n  A[base] --> B[concept]\n  B --> C[application]\n' | python scripts/validate_map.py -
+          python scripts/validate_roadmap.py tests/fixtures/roadmap_valid.json
