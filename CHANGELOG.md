@@ -8,7 +8,7 @@
 | 项 | 内容 |
 |---|---|
 | 许可证 | 新增 `LICENSE`（MIT，Copyright (c) 2026 Gatsby666-jay）；README 快速开始注明协议，解除 fork / 集成的法律阻塞 |
-| 持续集成 | 新增 `.github/workflows/test.yml`：push / PR 自动跑 compileall、引用、一致性、V2、V3、Benchmark、迁移、图与路线图校验共 8 组命令；README 挂状态徽章 |
+| 持续集成 | 包内新增 `.github/workflows/test.yml`（8 组命令，已按 workflow 形态本地全绿）；**远端 Actions 未启用**：现有 fine-grained PAT 缺 Workflows 写权限，GitHub 拒绝推送含 workflow 文件的提交，Git Data API 与 GitHub 集成均返回 403。补推后自动生效 |
 | 文档事实订正 | README 验证表头日期改为实际执行日、证据强度拆成「脚本 81 / 契约 20 / 串联 5 / **端到端 0** / 未自动化 6」、引用数 126→127；`docs/V3_TEST_REPORT.md` 修正把 SA–SH 误述为「非空字符串检查」（实际为 `trace.priority` 精确值断言）与迁移「7 项」→ 8 项；CHANGELOG 同步 |
 | 普适性边界 | README 删除「演奏」等无边界主张，限定为陈述性 / 可形式化程序性知识；已知限制新增默会知识与运动技能条目 |
 | `decision_engine.py` | ① 新增 `BlockingValidation`，业务阻塞返回退出码 1、参数与解析错误返回 2（原 docstring 声明的 1 永不发生）；② `preferences` 非 dict 受控拒绝，不再 traceback；③ `time_constraint_hours` 真正参与分支（≤2h 时 P6 收缩为最小可达子集，P1/P2 补救不被跳过）；④ `created_at` 改运行时 UTC，去掉硬编码日期；⑤ 修正空信号错误文案 |
@@ -18,11 +18,11 @@
 
 ### 测试
 
-V2 47（44 通过 / 0 失败 / 3 未自动化）+ V3 53（50 通过 / 0 失败 / 3 未自动化）+ Benchmark 12 = **112 用例，106 通过 / 0 失败 / 6 未自动化**；`validate_references.py` 127 处引用有效；`check_consistency.py` 18 个脚本可编译；`package_skill.py` 报 Skill is valid；GitHub Actions 首次运行绿。
+V2 47（44 通过 / 0 失败 / 3 未自动化）+ V3 53（50 通过 / 0 失败 / 3 未自动化）+ Benchmark 12 = **112 用例，106 通过 / 0 失败 / 6 未自动化**；`validate_references.py` 127 处引用有效；`check_consistency.py` 18 个脚本可编译；`package_skill.py` 报 Skill is valid；CI 的 8 组命令已在本地按 workflow 形态逐条跑通，远端 Actions 因权限未启用，**不宣称运行绿**。
 
 ### 历史提交说明
 
-2026-11-12 的 v3.0 推送产生 30+ 条同名 commit，成因是旧发布脚本按文件调用 Contents API，每个文件生成一条 commit，并非逐文件测试后的独立提交。自 v3.0.1 起改为单提交；已有历史保留，不做 rebase / force push。
+2026-11-12 的 v3.0 推送产生 30+ 条同名 commit，成因是旧发布脚本按文件调用 Contents API，每个文件生成一条 commit，并非逐文件测试后的独立提交。自 v3.0.1 起改为单提交；已有历史保留，不做 rebase / force push。v3.0.1 以两条可读 commit 推送（内容改动 + 文档订正），不再产生同名批量提交。
 
 
 ## v3.0 — Adaptive Learning Intelligence System（2026-11-12）

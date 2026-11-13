@@ -1,9 +1,6 @@
 # DeepLearn
 
 > 通用的自适应学习引擎 Skill（v3.0）—— 把任何学习目标递归拆到知识原子，用三张图组织认知，用完整闭环与迁移任务验证真正理解。
-
-[![tests](https://github.com/Gatsby666-jay/DeepLearn/actions/workflows/test.yml/badge.svg)](https://github.com/Gatsby666-jay/DeepLearn/actions/workflows/test.yml)
-
 *A general-purpose Agent Skill for recursive knowledge decomposition, prerequisite graphs, progressive teaching, and transfer-based mastery.*
 
 ---
@@ -248,7 +245,7 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 
 ## 验证状态
 
-已实际执行（本机，2026-11-13）；GitHub Actions 在每次 push / PR 复跑同一套命令：
+已实际执行（本机，2026-11-13）；CI 配置见 `.github/workflows/test.yml`，下列 8 组命令已按 workflow 形态本地跑通：
 
 **证据强度构成（合计 112 个可执行用例）**
 
@@ -262,7 +259,7 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 
 | 项目 | 结果 |
 |---|---|
-| `.github/workflows/test.yml` | push / PR 自动复跑下列 8 组命令，状态见顶部徽章 |
+| `.github/workflows/test.yml` | 包内已含 CI 配置，8 组命令本地全绿；**远端 Actions 尚未启用**，见已知限制 |
 | `scripts/run_v3_tests.py` v3.0 全套 | **53 用例：50 通过 / 0 失败 / 3 未自动化**；含 8 场景 A–H 精确优先级断言、10 模板校验、迁移全流程、V27–V32 决策引擎回归 |
 | `scripts/run_benchmark.py` | 12 领域 Benchmark：**12 通过 / 0 失败**（数学基础…工程项目） |
 | V2 `run_tests.py` 回归 | 47 用例：44 通过 / 0 失败 / 3 未自动化，V3 升级后未退化 |
@@ -315,6 +312,7 @@ cat graph.mmd | python scripts/validate_map.py -   # stdin
 - 自适应教学质量、类比恰当性、迁移题是否为真迁移，无法由 Python 判定（N1–N3 未自动化）。
 - Orchestrator、state 读写/快照、replan、复习调度、资源验证器仍是规则级设计，无运行时执行代码。
 - 时长是估算区间（默认按每周 3–5 小时），不是精确承诺。
+- 当前 GitHub 凭据缺少 Workflows 写权限，`.github/workflows/test.yml` **尚未推送到远端**，GitHub Actions 未启用。包内配置与本地 8 组命令验证均已完成，补推后自动生效；在补推前不要依据仓库主页判断 CI 状态。
 - 大目标的准确性依赖 Agent 自身的领域知识；规则能防止「跳前置」和「假装掌握」，不能替代事实核查。
 - **默会知识 / 运动技能类目标**（乐器演奏、体育动作、手术手法）的核心成分无法被六问验收与公理化拆解有效刻画。本方法论对这类目标只能产出形式合格但教学价值有限的拆解，不应强行套用六问门禁。
 - 引擎深度按 `scripts/` 下的可执行逻辑评估，不按目录名或文档篇幅评估；`evaluation/`、`multimodal/` 等目录的文档是接口说明，不是实现。
